@@ -31,12 +31,12 @@ export function AiFinder({ salons }: Props) {
             AI-powered
           </span>
         </div>
-        <h2 className="mt-2 text-2xl font-bold text-stone-900 sm:text-3xl">
-          Smart salon finder
+        <h2 className="font-display mt-2 text-2xl font-semibold text-stone-900 sm:text-3xl">
+          Your AI beauty concierge
         </h2>
         <p className="mt-2 max-w-xl text-stone-600">
-          Describe what you need in plain English — our AI matcher ranks the best
-          Mumbai salons for bridal, grooming, budget, or home service.
+          Tell us your dream look — bridal, spa, nails or budget-friendly — and we&apos;ll find
+          the perfect Mumbai salon for you.
         </p>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">

@@ -1,7 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { Salon } from "@/lib/types";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { Salon, SortMode } from "@/lib/types";
+import { MUMBAI_CENTER } from "@/lib/geo";
+import { attachDistances, applySortMode } from "@/lib/salon-sort";
+import { QuickFilters } from "./QuickFilters";
 import { SalonCard } from "./SalonCard";
 
 type Props = { salons: Salon[] };
@@ -14,9 +17,33 @@ export function SalonExplorer({ salons }: Props) {
   const [area, setArea] = useState("All");
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("All");
   const [homeOnly, setHomeOnly] = useState(false);
+  const [sortMode, setSortMode] = useState<SortMode>("default");
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [locStatus, setLocStatus] = useState<"idle" | "loading" | "ok" | "denied">("idle");
+
+  const requestLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      setLocStatus("denied");
+      return;
+    }
+    setLocStatus("loading");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setLocStatus("ok");
+        setSortMode((m) => (m === "default" ? "nearby" : m));
+      },
+      () => setLocStatus("denied"),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }, []);
+
+  useEffect(() => {
+    requestLocation();
+  }, [requestLocation]);
 
   const filtered = useMemo(() => {
-    return salons.filter((salon) => {
+    let list = salons.filter((salon) => {
       if (homeOnly && !salon.homeService) return false;
       if (area !== "All" && salon.area !== area) return false;
       if (category !== "All" && !salon.services.some((s) => s.category === category))
@@ -26,27 +53,61 @@ export function SalonExplorer({ salons }: Props) {
       return (
         salon.name.toLowerCase().includes(q) ||
         salon.area.toLowerCase().includes(q) ||
+        salon.address.toLowerCase().includes(q) ||
         salon.tags.some((t) => t.toLowerCase().includes(q))
       );
     });
-  }, [salons, search, area, category, homeOnly]);
+
+    const withDist = attachDistances(
+      list,
+      userLocation ?? (sortMode === "nearby" ? MUMBAI_CENTER : null)
+    );
+    return applySortMode(withDist, sortMode);
+  }, [salons, search, area, category, homeOnly, sortMode, userLocation]);
 
   return (
     <section id="salons" className="scroll-mt-20 py-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 className="text-2xl font-bold text-stone-900 sm:text-3xl">
-          Explore salons in Mumbai
-        </h2>
-        <p className="mt-2 text-stone-600">
-          Filter by area, service type, or home visits — book in minutes.
-        </p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="font-display text-2xl font-semibold text-stone-900 sm:text-3xl">
+              Salons women love in Mumbai
+            </h2>
+            <p className="mt-2 text-stone-600">
+              Filter, book, ride & review — your complete beauty journey in one place.
+            </p>
+          </div>
+          {locStatus === "ok" && userLocation && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-800">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              Location on — nearby sorting enabled
+            </span>
+          )}
+          {locStatus === "denied" && (
+            <button
+              type="button"
+              onClick={requestLocation}
+              className="text-xs font-medium text-rose-600 hover:underline"
+            >
+              Enable location for nearby salons
+            </button>
+          )}
+        </div>
 
-        <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-rose-100 bg-white p-4 shadow-sm sm:flex-row sm:flex-wrap sm:items-end">
-          <label className="flex-1 min-w-[200px]">
+        <div className="mt-6">
+          <QuickFilters
+            active={sortMode}
+            onChange={setSortMode}
+            locationEnabled={locStatus === "ok" || locStatus === "loading"}
+          />
+        </div>
+
+        <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-rose-100 bg-white p-4 shadow-sm sm:flex-row sm:flex-wrap sm:items-end">
+          <label className="min-w-[200px] flex-1">
             <span className="text-xs font-medium text-stone-500">Search</span>
             <input
               type="search"
-              placeholder="Salon name, area, tags..."
+              placeholder="Salon, area, address..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2 text-sm outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100"
@@ -95,17 +156,20 @@ export function SalonExplorer({ salons }: Props) {
 
         <p className="mt-4 text-sm text-stone-500">
           {filtered.length} salon{filtered.length !== 1 ? "s" : ""} found
+          {sortMode !== "default" && (
+            <span className="text-rose-600"> · sorted by {sortMode.replace("-", " ")}</span>
+          )}
         </p>
 
         <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((salon) => (
-            <SalonCard key={salon.id} salon={salon} />
+            <SalonCard key={salon.id} salon={salon} distanceKm={salon.distanceKm} />
           ))}
         </div>
 
         {filtered.length === 0 && (
           <p className="mt-8 text-center text-stone-500">
-            No salons match your filters. Try clearing search or area.
+            No salons match your filters. Try another quick filter or clear search.
           </p>
         )}
       </div>

@@ -2,7 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BookingForm } from "@/components/BookingForm";
+import { SalonInfoPanel } from "@/components/SalonInfoPanel";
+import { SalonReviews } from "@/components/SalonReviews";
 import { formatPrice, getSalonById, priceLevelLabel } from "@/lib/salons";
+import { getMapViewUrl } from "@/lib/maps";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -11,12 +14,11 @@ export default async function SalonPage({ params }: Props) {
   const salon = getSalonById(id);
   if (!salon) notFound();
 
+  const mapUrl = getMapViewUrl(salon);
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <Link
-        href="/#salons"
-        className="text-sm text-rose-600 hover:text-rose-700"
-      >
+      <Link href="/#salons" className="text-sm text-rose-600 hover:text-rose-700">
         ← Back to salons
       </Link>
 
@@ -32,14 +34,28 @@ export default async function SalonPage({ params }: Props) {
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
           </div>
+
+          <a
+            href={mapUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 flex items-center justify-between rounded-xl border border-rose-200 bg-rose-50/50 px-4 py-3 text-sm transition hover:bg-rose-50"
+          >
+            <span className="text-stone-700">
+              <span className="font-semibold text-stone-900">📍 {salon.area}</span>
+              <span className="mt-0.5 block text-xs text-stone-500 line-clamp-1">
+                {salon.address}
+              </span>
+            </span>
+            <span className="shrink-0 font-semibold text-rose-600">Open in Maps →</span>
+          </a>
+
           <h1 className="mt-6 text-3xl font-bold text-stone-900">{salon.name}</h1>
           <p className="mt-1 text-stone-600">
             {salon.area} · {priceLevelLabel(salon.priceLevel)} · ★ {salon.rating} (
             {salon.reviewCount} reviews)
           </p>
-          <p className="mt-2 text-sm text-stone-500">
-            Open: {salon.openHours}
-          </p>
+          <p className="mt-2 text-sm text-stone-500">Open: {salon.openHours}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {salon.tags.map((tag) => (
               <span
@@ -56,6 +72,10 @@ export default async function SalonPage({ params }: Props) {
             )}
           </div>
 
+          <div className="mt-8">
+            <SalonInfoPanel salon={salon} />
+          </div>
+
           <h2 className="mt-8 text-lg font-semibold text-stone-900">Services</h2>
           <ul className="mt-3 space-y-3">
             {salon.services.map((service) => (
@@ -69,12 +89,12 @@ export default async function SalonPage({ params }: Props) {
                     {service.category} · {service.durationMin} min
                   </p>
                 </div>
-                <p className="font-semibold text-stone-900">
-                  {formatPrice(service.price)}
-                </p>
+                <p className="font-semibold text-stone-900">{formatPrice(service.price)}</p>
               </li>
             ))}
           </ul>
+
+          <SalonReviews salon={salon} />
         </div>
 
         <div className="lg:sticky lg:top-24 lg:self-start">

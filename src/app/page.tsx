@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { AiFinder } from "@/components/AiFinder";
+import { GlamBookAIStylist } from "@/components/GlamBookAIStylist";
+import { PendingReviewBanner } from "@/components/PendingReviewBanner";
 import { SalonExplorer } from "@/components/SalonExplorer";
 import { SITE_CONFIG } from "@/lib/config";
 import { SALONS } from "@/lib/salons";
@@ -7,61 +9,79 @@ import { SALONS } from "@/lib/salons";
 export default function HomePage() {
   return (
     <>
-      <section className="relative overflow-hidden bg-gradient-to-br from-rose-600 via-fuchsia-600 to-violet-700 text-white">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.06%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-80" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-rose-400 via-fuchsia-400 to-pink-500 text-white">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.08%22%3E%3Cpath d=%22M20 20h20v20H20zM0 0h20v20H0z%22/%3E%3C/g%3E%3C/svg%3E')]" />
+        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-fuchsia-300/20 blur-2xl" />
         <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-          <p className="text-sm font-medium uppercase tracking-widest text-rose-100">
-            SuperXgen Buildathon 2026
+          <p className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-1.5 text-xs font-medium backdrop-blur">
+            <span>💅</span> Trusted by women across Mumbai
           </p>
-          <h1 className="mt-3 max-w-2xl text-4xl font-bold leading-tight sm:text-5xl">
-            {SITE_CONFIG.brand}
+          <h1 className="font-display mt-6 max-w-2xl text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+            Your beauty ritual,{" "}
+            <span className="text-rose-100">one tap away</span>
           </h1>
-          <p className="mt-4 max-w-xl text-lg text-rose-50">{SITE_CONFIG.tagline}</p>
+          <p className="mt-5 max-w-xl text-lg text-rose-50/95 leading-relaxed">
+            {SITE_CONFIG.tagline}. Bridal glam, spa days, nails & hair — book verified salons and
+            share honest reviews after every visit.
+          </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="#salons"
-              className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-rose-700 shadow-lg hover:bg-rose-50 transition-colors"
+              className="rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-rose-600 shadow-xl shadow-rose-900/10 hover:bg-rose-50 transition"
             >
-              Browse {SALONS.length} salons
+              Explore {SALONS.length} salons
             </Link>
             <Link
-              href="#ai"
-              className="rounded-full border border-white/40 bg-white/10 px-6 py-3 text-sm font-semibold backdrop-blur hover:bg-white/20 transition-colors"
+              href="#ai-stylist"
+              className="rounded-full border border-white/50 bg-white/10 px-7 py-3.5 text-sm font-semibold backdrop-blur hover:bg-white/20 transition"
             >
-              Try AI finder
+              ✨ AI Stylist
             </Link>
           </div>
-          <dl className="mt-12 grid grid-cols-3 gap-4 max-w-md text-center sm:text-left">
-            <div>
-              <dt className="text-2xl font-bold">{SALONS.length}+</dt>
-              <dd className="text-xs text-rose-100">Verified salons</dd>
+          <dl className="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-4 max-w-2xl">
+            <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">
+              <dt className="font-display text-2xl font-semibold">{SALONS.length}+</dt>
+              <dd className="text-xs text-rose-100">Curated salons</dd>
             </div>
-            <div>
-              <dt className="text-2xl font-bold">4.7★</dt>
-              <dd className="text-xs text-rose-100">Avg. rating</dd>
+            <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">
+              <dt className="font-display text-2xl font-semibold">★ 4.7</dt>
+              <dd className="text-xs text-rose-100">Guest-loved</dd>
             </div>
-            <div>
-              <dt className="text-2xl font-bold">24/7</dt>
-              <dd className="text-xs text-rose-100">Online booking</dd>
+            <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">
+              <dt className="font-display text-2xl font-semibold">Reviews</dt>
+              <dd className="text-xs text-rose-100">After every visit</dd>
+            </div>
+            <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">
+              <dt className="font-display text-2xl font-semibold">Ride</dt>
+              <dd className="text-xs text-rose-100">Uber · Ola · Rapido</dd>
             </div>
           </dl>
         </div>
       </section>
 
+      <div className="pt-8">
+        <PendingReviewBanner />
+      </div>
+
+      <GlamBookAIStylist />
       <AiFinder salons={SALONS} />
       <SalonExplorer salons={SALONS} />
 
-      <section className="border-t border-rose-100 bg-rose-50/50 py-12">
+      <section className="border-t border-rose-100/80 py-16">
         <div className="mx-auto max-w-6xl px-4 text-center sm:px-6">
-          <h2 className="text-xl font-bold text-stone-900">Ready for your next look?</h2>
-          <p className="mt-2 text-stone-600">
-            Pick a salon, choose a service, and confirm in under a minute.
+          <h2 className="font-display text-2xl font-semibold text-stone-900 sm:text-3xl">
+            Ready to feel fabulous?
+          </h2>
+          <p className="mt-3 text-stone-600 max-w-md mx-auto">
+            Book today. After your appointment, rate your visit — help salons improve and help
+            other women choose with confidence.
           </p>
           <Link
             href="#salons"
-            className="mt-6 inline-block rounded-full bg-rose-600 px-8 py-3 text-sm font-semibold text-white hover:bg-rose-700"
+            className="mt-8 inline-block rounded-full bg-gradient-to-r from-rose-500 to-fuchsia-500 px-10 py-3.5 text-sm font-semibold text-white shadow-lg shadow-rose-200/50"
           >
-            Start booking
+            Find your salon
           </Link>
         </div>
       </section>

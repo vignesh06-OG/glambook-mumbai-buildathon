@@ -1,7 +1,7 @@
 export const SITE_CONFIG = {
   city: "Mumbai",
-  tagline: "Discover & book the best salons across Mumbai",
-  brand: "Mumbai Salon Marketplace",
+  tagline: "Book beauty & wellness — made for women who deserve the best",
+  brand: "GlamBook Mumbai",
   description:
-    "AI-powered beauty salon discovery and instant booking for Mumbai — from Bandra blowouts to Andheri bridal glam.",
+    "Discover trusted salons, book in seconds, and share honest reviews — bridal, hair, nails & spa across Mumbai.",
 } as const;

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Salon } from "@/lib/types";
+import { saveBooking } from "@/lib/bookings";
+import { isFirebaseConfigured } from "@/lib/firebase";
 import { formatPrice } from "@/lib/salons";
 
 const TIME_SLOTS = [
@@ -26,10 +28,11 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const service = salon.services.find((s) => s.id === serviceId);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim() || phone.length < 10) {
       setError("Please enter your name and a valid 10-digit phone number.");
@@ -39,32 +42,63 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
       setError("Please select a date.");
       return;
     }
+    if (!isFirebaseConfigured()) {
+      setError("Cloud booking is not configured. Add Firebase keys to .env.local");
+      return;
+    }
 
-    const params = new URLSearchParams({
-      salon: salon.name,
-      service: service?.name ?? "",
-      date,
-      time,
-      name: name.trim(),
-      phone,
-      price: String(service?.price ?? 0),
-    });
-    router.push(`/booking/confirmed?${params.toString()}`);
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const booking = await saveBooking({
+        salonId: salon.id,
+        salonName: salon.name,
+        serviceId: service?.id ?? serviceId,
+        serviceName: service?.name ?? "",
+        date,
+        time,
+        customerName: name.trim(),
+        phone,
+        price: service?.price ?? 0,
+      });
+
+      const params = new URLSearchParams({
+        id: booking.id,
+        salon: salon.name,
+        salonId: salon.id,
+        service: service?.name ?? "",
+        date,
+        time,
+        name: name.trim(),
+        phone,
+        price: String(service?.price ?? 0),
+      });
+      router.push(`/booking/confirmed?${params.toString()}`);
+    } catch {
+      setError("Could not save booking. Check your connection and try again.");
+      setSubmitting(false);
+    }
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-rose-100 bg-white p-6 shadow-sm"
+      className="rounded-3xl border border-rose-100 bg-white/95 p-6 shadow-lg shadow-rose-100/40 backdrop-blur"
     >
-      <h3 className="text-lg font-semibold text-stone-900">Book appointment</h3>
+      <h3 className="font-display text-lg font-semibold text-stone-900">
+        Book your appointment
+      </h3>
+      <p className="mt-1 text-xs text-stone-500">
+        Saved securely to cloud · Rate after your visit ✨
+      </p>
 
       <label className="mt-4 block">
         <span className="text-xs font-medium text-stone-500">Service</span>
         <select
           value={serviceId}
           onChange={(e) => setServiceId(e.target.value)}
-          className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2 text-sm"
+          className="mt-1 w-full rounded-xl border border-rose-100 bg-rose-50/30 px-3 py-2.5 text-sm focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-100"
         >
           {salon.services.map((s) => (
             <option key={s.id} value={s.id}>
@@ -82,7 +116,7 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
             value={date}
             min={new Date().toISOString().split("T")[0]}
             onChange={(e) => setDate(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-rose-100 bg-rose-50/30 px-3 py-2.5 text-sm focus:border-rose-300 focus:outline-none"
             required
           />
         </label>
@@ -91,7 +125,7 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
           <select
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-rose-100 bg-rose-50/30 px-3 py-2.5 text-sm"
           >
             {TIME_SLOTS.map((t) => (
               <option key={t} value={t}>
@@ -110,7 +144,7 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Priya Sharma"
-            className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-rose-100 bg-rose-50/30 px-3 py-2.5 text-sm focus:border-rose-300 focus:outline-none"
             required
           />
         </label>
@@ -121,7 +155,7 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
             value={phone}
             onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
             placeholder="9876543210"
-            className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-rose-100 bg-rose-50/30 px-3 py-2.5 text-sm focus:border-rose-300 focus:outline-none"
             required
           />
         </label>
@@ -131,10 +165,11 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
 
       <button
         type="submit"
-        className="mt-6 w-full rounded-xl bg-rose-600 py-3 text-sm font-semibold text-white hover:bg-rose-700 transition-colors"
+        disabled={submitting}
+        className="mt-6 w-full rounded-full bg-gradient-to-r from-rose-500 via-fuchsia-500 to-rose-500 py-3.5 text-sm font-semibold text-white shadow-lg shadow-rose-200/60 hover:opacity-95 transition disabled:opacity-60"
       >
-        Confirm booking
-        {service && ` · ${formatPrice(service.price)}`}
+        {submitting ? "Saving…" : "Confirm booking"}
+        {!submitting && service && ` · ${formatPrice(service.price)}`}
       </button>
     </form>
   );

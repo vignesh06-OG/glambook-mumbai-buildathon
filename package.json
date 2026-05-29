@@ -6,9 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "report:html": "node docs/generate-pdf.mjs",
+    "report:pdf": "node docs/generate-pdf.mjs && \"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --headless --disable-gpu --no-pdf-header-footer --print-to-pdf=docs/CURRENT_STATE_REPORT.pdf file:///c:/beauty-salon-marketplace/docs/CURRENT_STATE_REPORT.html"
   },
   "dependencies": {
+    "firebase": "^12.14.0",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4"

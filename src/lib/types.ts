@@ -10,6 +10,13 @@ export type Salon = {
   id: string;
   name: string;
   area: string;
+  address: string;
+  lat: number;
+  lng: number;
+  phone: string;
+  whatsapp?: string;
+  email?: string;
+  website?: string;
   rating: number;
   reviewCount: number;
   priceLevel: 1 | 2 | 3;
@@ -18,7 +25,17 @@ export type Salon = {
   openHours: string;
   services: Service[];
   homeService: boolean;
+  amenities?: string[];
 };
+
+export type SortMode =
+  | "default"
+  | "nearby"
+  | "best-rated"
+  | "highly-rated"
+  | "low-budget"
+  | "premium"
+  | "best-services";
 
 export type Booking = {
   salonId: string;
