@@ -4,14 +4,18 @@ import type { Salon } from "@/lib/types";
 import { formatPrice, priceLevelLabel } from "@/lib/salons";
 import { formatDistance } from "@/lib/geo";
 import { SalonActions } from "./SalonActions";
+import { VerifiedBadge } from "./VerifiedBadge";
 
-type Props = { salon: Salon; distanceKm?: number };
+type Props = { salon: Salon; distanceKm?: number; index?: number };
 
-export function SalonCard({ salon, distanceKm }: Props) {
+export function SalonCard({ salon, distanceKm, index = 0 }: Props) {
   const minPrice = Math.min(...salon.services.map((s) => s.price));
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-rose-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-rose-100">
+    <article
+      className="anim-fade-up group flex flex-col overflow-hidden rounded-3xl border border-rose-100/70 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(251,95,147,0.12)]"
+      style={{ animationDelay: `${Math.min(index, 12) * 55}ms` }}
+    >
       <Link href={`/salon/${salon.id}`} className="block">
         <div className="relative aspect-[16/10] overflow-hidden bg-rose-50">
           <Image
@@ -21,13 +25,16 @@ export function SalonCard({ salon, distanceKm }: Props) {
             className="object-cover transition duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, 33vw"
           />
-          {salon.homeService && (
-            <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-emerald-700 shadow-sm">
-              Home service
-            </span>
-          )}
+          <div className="absolute left-3 top-3 flex flex-col gap-2">
+            <VerifiedBadge />
+            {salon.homeService && (
+              <span className="w-fit rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 shadow-sm">
+                Home service
+              </span>
+            )}
+          </div>
           {salon.priceLevel === 3 && (
-            <span className="absolute right-3 top-3 rounded-full bg-amber-400/95 px-2.5 py-1 text-xs font-semibold text-amber-950 shadow-sm">
+            <span className="absolute right-3 top-3 rounded-full bg-gradient-to-r from-amber-200 to-amber-100 px-2.5 py-1 text-[11px] font-semibold text-amber-950 shadow-sm">
               Premium
             </span>
           )}
@@ -40,7 +47,7 @@ export function SalonCard({ salon, distanceKm }: Props) {
         <div className="p-4 pb-2">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h3 className="font-semibold text-stone-900 group-hover:text-rose-700">
+              <h3 className="text-[15px] font-semibold text-stone-900 group-hover:text-rose-700">
                 {salon.name}
               </h3>
               <p className="text-sm text-stone-500">{salon.area}</p>

@@ -28,14 +28,14 @@ export function BookRideModal({ salon, open, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50 p-4 sm:items-center"
+      className="anim-pop-in fixed inset-0 z-[100] flex items-end justify-center bg-black/50 p-4 sm:items-center"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="ride-modal-title"
     >
       <div
-        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+        className="anim-pop-in w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl shadow-rose-200/40"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="ride-modal-title" className="text-lg font-bold text-stone-900">

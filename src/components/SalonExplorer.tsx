@@ -162,8 +162,13 @@ export function SalonExplorer({ salons }: Props) {
         </p>
 
         <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((salon) => (
-            <SalonCard key={salon.id} salon={salon} distanceKm={salon.distanceKm} />
+          {filtered.map((salon, idx) => (
+            <SalonCard
+              key={salon.id}
+              salon={salon}
+              distanceKm={salon.distanceKm}
+              index={idx}
+            />
           ))}
         </div>
 

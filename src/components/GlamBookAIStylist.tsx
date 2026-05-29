@@ -71,7 +71,11 @@ export function GlamBookAIStylist() {
   }
 
   return (
-    <section id="ai-stylist" className="scroll-mt-20 py-16">
+    <section
+      id="ai-stylist"
+      className="scroll-mt-20 py-16"
+      style={{ contentVisibility: "auto", containIntrinsicSize: "900px" }}
+    >
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <div className="text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-violet-100 to-fuchsia-100 px-4 py-1.5 text-xs font-semibold text-violet-800">
@@ -89,7 +93,7 @@ export function GlamBookAIStylist() {
           </p>
         </div>
 
-        <div className="mt-8 overflow-hidden rounded-3xl border border-rose-100 bg-white shadow-xl shadow-rose-100/60">
+        <div className="mt-8 overflow-hidden rounded-4xl border border-rose-100/70 bg-white shadow-[0_18px_55px_rgba(232,121,249,0.12)]">
           <div className="border-b border-rose-50 bg-gradient-to-r from-rose-50 via-fuchsia-50 to-rose-50 px-5 py-4">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-400 to-fuchsia-500 text-xl text-white shadow-md">
@@ -104,7 +108,7 @@ export function GlamBookAIStylist() {
 
           <div
             ref={listRef}
-            className="flex max-h-[min(420px,55vh)] flex-col gap-4 overflow-y-auto p-5"
+            className="flex max-h-[min(420px,55vh)] flex-col gap-4 overflow-y-auto p-5 [scrollbar-gutter:stable]"
           >
             {messages.map((m, i) => (
               <div
