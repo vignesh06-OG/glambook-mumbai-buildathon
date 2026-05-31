@@ -10,11 +10,27 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+function isPlaceholderEnv(value: string | undefined): boolean {
+  if (!value?.trim()) return true;
+  const v = value.trim().toLowerCase();
+  return (
+    v.includes("dummy") ||
+    v.includes("your-project") ||
+    v.includes("replace_me") ||
+    v.includes("paste_") ||
+    v === "xxx"
+  );
+}
+
+/** True only when real Firebase credentials are set (not demo placeholders). */
 export function isFirebaseConfigured(): boolean {
   return Boolean(
     firebaseConfig.apiKey &&
       firebaseConfig.projectId &&
-      firebaseConfig.appId
+      firebaseConfig.appId &&
+      !isPlaceholderEnv(firebaseConfig.apiKey) &&
+      !isPlaceholderEnv(firebaseConfig.projectId) &&
+      !isPlaceholderEnv(firebaseConfig.appId)
   );
 }
 

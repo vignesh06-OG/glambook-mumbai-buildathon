@@ -7,9 +7,11 @@ import {
   where,
 } from "firebase/firestore";
 import { getDb, isFirebaseConfigured } from "./firebase";
+import { readLocalJson, writeLocalJson } from "./local-persistence";
 import type { SalonInsights, StoredReview } from "./storage-types";
 
 const COLLECTION = "reviews";
+const LOCAL_KEY = "msm_reviews";
 const LEGACY_KEY = "msm_reviews";
 const MIGRATED_KEY = "msm_reviews_firestore_migrated";
 
@@ -30,12 +32,22 @@ function docToReview(id: string, data: Record<string, unknown>): StoredReview {
   };
 }
 
+function readLocalReviews(): StoredReview[] {
+  const fromKey = readLocalJson<StoredReview[]>(LOCAL_KEY, []);
+  if (fromKey.length > 0) return fromKey;
+  return readLocalJson<StoredReview[]>(LEGACY_KEY, []);
+}
+
+function writeLocalReviews(list: StoredReview[]): void {
+  writeLocalJson(LOCAL_KEY, list);
+}
+
 async function migrateLegacyReviews(): Promise<void> {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !isFirebaseConfigured()) return;
   if (localStorage.getItem(MIGRATED_KEY)) return;
 
   try {
-    const raw = localStorage.getItem(LEGACY_KEY);
+    const raw = localStorage.getItem(LEGACY_KEY) ?? localStorage.getItem(LOCAL_KEY);
     if (!raw) {
       localStorage.setItem(MIGRATED_KEY, "1");
       return;
@@ -57,11 +69,6 @@ async function migrateLegacyReviews(): Promise<void> {
 export async function saveReview(
   data: Omit<StoredReview, "id" | "createdAt">
 ): Promise<StoredReview> {
-  if (!isFirebaseConfigured()) {
-    throw new Error("Firebase not configured");
-  }
-
-  const db = getDb();
   const id = crypto.randomUUID();
   const review: StoredReview = {
     ...data,
@@ -69,19 +76,37 @@ export async function saveReview(
     createdAt: new Date().toISOString(),
   };
 
-  await setDoc(doc(db, COLLECTION, id), { ...review });
+  if (isFirebaseConfigured()) {
+    try {
+      await setDoc(doc(getDb(), COLLECTION, id), { ...review });
+      return review;
+    } catch (e) {
+      console.warn("[reviews] Firestore save failed, using local storage:", e);
+    }
+  }
+
+  const list = readLocalReviews();
+  list.push(review);
+  writeLocalReviews(list);
   return review;
 }
 
 export async function getReviewsBySalon(salonId: string): Promise<StoredReview[]> {
-  if (!isFirebaseConfigured()) return [];
+  if (isFirebaseConfigured()) {
+    try {
+      await migrateLegacyReviews();
+      const q = query(collection(getDb(), COLLECTION), where("salonId", "==", salonId));
+      const snap = await getDocs(q);
+      return snap.docs
+        .map((d) => docToReview(d.id, d.data() as Record<string, unknown>))
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } catch (e) {
+      console.warn("[reviews] Firestore read failed, using local:", e);
+    }
+  }
 
-  await migrateLegacyReviews();
-  const q = query(collection(getDb(), COLLECTION), where("salonId", "==", salonId));
-  const snap = await getDocs(q);
-
-  return snap.docs
-    .map((d) => docToReview(d.id, d.data() as Record<string, unknown>))
+  return readLocalReviews()
+    .filter((r) => r.salonId === salonId)
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 }
 

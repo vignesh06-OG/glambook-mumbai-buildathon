@@ -1,5 +1,9 @@
 import type { Salon } from "./types";
 
+/** Consistent Unsplash crop — used for all salon hero/card images */
+const img = (id: string) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&h=450&q=85`;
+
 export const SALONS: Salon[] = [
   {
     id: "glam-studio-bandra",
@@ -15,7 +19,7 @@ export const SALONS: Salon[] = [
     rating: 4.8,
     reviewCount: 312,
     priceLevel: 3,
-    image: "https://images.unsplash.com/photo-1560066984-138d9834a973?w=800&q=80",
+    image: img("photo-1521590832167-7bcbfaa6381f"),
     tags: ["Luxury", "Hair", "Bridal"],
     openHours: "10:00 AM – 9:00 PM",
     homeService: false,
@@ -39,7 +43,7 @@ export const SALONS: Salon[] = [
     rating: 4.6,
     reviewCount: 189,
     priceLevel: 2,
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80",
+    image: img("photo-1540555700478-4be289fbbe23"),
     tags: ["Spa", "Skin", "Relaxation"],
     openHours: "9:00 AM – 8:30 PM",
     homeService: true,
@@ -62,7 +66,7 @@ export const SALONS: Salon[] = [
     rating: 4.7,
     reviewCount: 156,
     priceLevel: 2,
-    image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80",
+    image: img("photo-1585747860715-2ba37e788b70"),
     tags: ["Men", "Grooming", "Beard"],
     openHours: "11:00 AM – 10:00 PM",
     homeService: false,
@@ -87,7 +91,7 @@ export const SALONS: Salon[] = [
     rating: 4.9,
     reviewCount: 428,
     priceLevel: 3,
-    image: "https://images.unsplash.com/photo-1487412948497-a4ef3d4ae13f?w=800&q=80",
+    image: img("photo-1512496015851-a90e38ad01d8"),
     tags: ["Bridal", "Makeup", "Mehendi"],
     openHours: "9:00 AM – 7:00 PM",
     homeService: true,
@@ -110,7 +114,7 @@ export const SALONS: Salon[] = [
     rating: 4.5,
     reviewCount: 98,
     priceLevel: 1,
-    image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800&q=80",
+    image: img("photo-1632345031438-872ee7dff3c4"),
     tags: ["Nails", "Affordable", "Quick"],
     openHours: "10:00 AM – 8:00 PM",
     homeService: false,
@@ -134,7 +138,7 @@ export const SALONS: Salon[] = [
     rating: 4.4,
     reviewCount: 76,
     priceLevel: 2,
-    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=800&q=80",
+    image: img("photo-1560066984-138d9834a973"),
     tags: ["Home Service", "Hair", "Skin"],
     openHours: "8:00 AM – 8:00 PM",
     homeService: true,

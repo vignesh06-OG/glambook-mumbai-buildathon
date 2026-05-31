@@ -44,6 +44,28 @@ body {
   font-feature-settings: "ss01", "cv01";
 }
 
+/* Tagline & accent copy — elegant script */
+.font-script {
+  font-family: var(--font-script);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* Hero headline — editorial luxury serif (distinct from script tagline) */
+.font-hero {
+  font-family: var(--font-hero), "Times New Roman", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-wrap: balance;
+}
+
+.font-hero-accent {
+  font-family: var(--font-hero), Georgia, serif;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0.04em;
+}
+
 /* Premium micro-interactions (no JS libs) */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes fade-up {

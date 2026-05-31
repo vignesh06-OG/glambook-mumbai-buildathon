@@ -10,9 +10,11 @@ import {
 } from "firebase/firestore";
 import { getDb, isFirebaseConfigured } from "./firebase";
 import { getDeviceId } from "./device-id";
+import { readLocalJson, writeLocalJson } from "./local-persistence";
 import type { StoredBooking } from "./storage-types";
 
 const COLLECTION = "bookings";
+const LOCAL_KEY = "msm_bookings";
 const LEGACY_KEY = "msm_bookings";
 const MIGRATED_KEY = "msm_firestore_migrated";
 
@@ -34,13 +36,51 @@ function docToBooking(id: string, data: Record<string, unknown>): StoredBooking 
   };
 }
 
+function sortBookings(list: StoredBooking[]): StoredBooking[] {
+  return [...list].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+}
+
+function readLocalBookings(): StoredBooking[] {
+  const fromKey = readLocalJson<StoredBooking[]>(LOCAL_KEY, []);
+  if (fromKey.length > 0) return fromKey;
+  return readLocalJson<StoredBooking[]>(LEGACY_KEY, []);
+}
+
+function writeLocalBookings(list: StoredBooking[]): void {
+  writeLocalJson(LOCAL_KEY, list);
+}
+
+function getLocalBooking(id: string): StoredBooking | null {
+  return readLocalBookings().find((b) => b.id === id) ?? null;
+}
+
+function saveLocalBooking(booking: StoredBooking): StoredBooking {
+  const list = readLocalBookings().filter((b) => b.id !== booking.id);
+  list.push(booking);
+  writeLocalBookings(list);
+  return booking;
+}
+
+function updateLocalBooking(
+  id: string,
+  patch: Partial<Pick<StoredBooking, "reviewed">>
+): void {
+  const list = readLocalBookings();
+  const idx = list.findIndex((b) => b.id === id);
+  if (idx === -1) return;
+  list[idx] = { ...list[idx], ...patch };
+  writeLocalBookings(list);
+}
+
 /** One-time migration from localStorage → Firestore */
 async function migrateLegacyBookings(): Promise<void> {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !isFirebaseConfigured()) return;
   if (localStorage.getItem(MIGRATED_KEY)) return;
 
   try {
-    const raw = localStorage.getItem(LEGACY_KEY);
+    const raw = localStorage.getItem(LEGACY_KEY) ?? localStorage.getItem(LOCAL_KEY);
     if (!raw) {
       localStorage.setItem(MIGRATED_KEY, "1");
       return;
@@ -69,45 +109,60 @@ async function migrateLegacyBookings(): Promise<void> {
 export async function saveBooking(
   data: Omit<StoredBooking, "id" | "createdAt" | "reviewed" | "deviceId">
 ): Promise<StoredBooking> {
-  if (!isFirebaseConfigured()) {
-    throw new Error("Firebase not configured");
-  }
-
-  const db = getDb();
   const deviceId = getDeviceId();
-  const id = crypto.randomUUID();
   const booking: StoredBooking = {
     ...data,
-    id,
+    id: crypto.randomUUID(),
     deviceId,
     createdAt: new Date().toISOString(),
     reviewed: false,
   };
 
-  await setDoc(doc(db, COLLECTION, id), { ...booking });
-  return booking;
+  if (isFirebaseConfigured()) {
+    try {
+      await setDoc(doc(getDb(), COLLECTION, booking.id), { ...booking });
+      return booking;
+    } catch (e) {
+      console.warn("[bookings] Firestore save failed, using local storage:", e);
+    }
+  }
+
+  return saveLocalBooking(booking);
 }
 
 export async function getBooking(id: string): Promise<StoredBooking | null> {
-  if (!isFirebaseConfigured()) return null;
+  if (isFirebaseConfigured()) {
+    try {
+      await migrateLegacyBookings();
+      const snap = await getDoc(doc(getDb(), COLLECTION, id));
+      if (snap.exists()) {
+        return docToBooking(snap.id, snap.data() as Record<string, unknown>);
+      }
+    } catch (e) {
+      console.warn("[bookings] Firestore read failed, trying local:", e);
+    }
+  }
 
-  await migrateLegacyBookings();
-  const snap = await getDoc(doc(getDb(), COLLECTION, id));
-  if (!snap.exists()) return null;
-  return docToBooking(snap.id, snap.data() as Record<string, unknown>);
+  return getLocalBooking(id);
 }
 
 export async function getAllBookings(): Promise<StoredBooking[]> {
-  if (!isFirebaseConfigured()) return [];
-
-  await migrateLegacyBookings();
   const deviceId = getDeviceId();
-  const q = query(collection(getDb(), COLLECTION), where("deviceId", "==", deviceId));
-  const snap = await getDocs(q);
 
-  return snap.docs
-    .map((d) => docToBooking(d.id, d.data() as Record<string, unknown>))
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  if (isFirebaseConfigured()) {
+    try {
+      await migrateLegacyBookings();
+      const q = query(collection(getDb(), COLLECTION), where("deviceId", "==", deviceId));
+      const snap = await getDocs(q);
+      return sortBookings(
+        snap.docs.map((d) => docToBooking(d.id, d.data() as Record<string, unknown>))
+      );
+    } catch (e) {
+      console.warn("[bookings] Firestore list failed, using local:", e);
+    }
+  }
+
+  return sortBookings(readLocalBookings().filter((b) => b.deviceId === deviceId));
 }
 
 export async function getPendingReviewBookings(): Promise<StoredBooking[]> {
@@ -116,7 +171,14 @@ export async function getPendingReviewBookings(): Promise<StoredBooking[]> {
 }
 
 export async function markBookingReviewed(bookingId: string): Promise<void> {
-  if (!isFirebaseConfigured()) return;
+  if (isFirebaseConfigured()) {
+    try {
+      await updateDoc(doc(getDb(), COLLECTION, bookingId), { reviewed: true });
+      return;
+    } catch (e) {
+      console.warn("[bookings] Firestore update failed, using local:", e);
+    }
+  }
 
-  await updateDoc(doc(getDb(), COLLECTION, bookingId), { reviewed: true });
+  updateLocalBooking(bookingId, { reviewed: true });
 }

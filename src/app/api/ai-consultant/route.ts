@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { AIConsultantResponse, ConsultantMessage } from "@/lib/ai-consultant-types";
 import { AI_CONSULTANT_SYSTEM_PROMPT, getSalonCatalogForAI } from "@/lib/salon-catalog";
-import { recommendSalons } from "@/lib/ai-recommend";
+import { buildConsultantFallback } from "@/lib/ai-recommend";
 import { SALONS } from "@/lib/salons";
 
 export const runtime = "nodejs";
@@ -110,25 +110,7 @@ async function callOpenAI(messages: { role: string; content: string }[]): Promis
 }
 
 function fallbackResponse(userQuery: string): AIConsultantResponse {
-  const matches = recommendSalons(userQuery, SALONS).slice(0, 2);
-  const recommendations = matches.map((s) => {
-    const svc = s.services[0];
-    return {
-      salonId: s.id,
-      salonName: s.name,
-      serviceId: svc.id,
-      serviceName: svc.name,
-      reason: `Strong match for your request in ${s.area} (★${s.rating}).`,
-    };
-  });
-  return {
-    reply:
-      recommendations.length > 0
-        ? `Based on your needs, I've picked the best matches from our Mumbai catalog. Add a GROQ_API_KEY or GEMINI_API_KEY for full generative AI — meanwhile here are smart matches for you.`
-        : "Tell me more about your hair, event, area in Mumbai, or budget — I'll find the perfect salon.",
-    recommendations,
-    provider: "fallback",
-  };
+  return buildConsultantFallback(userQuery, SALONS);
 }
 
 export async function POST(req: NextRequest) {

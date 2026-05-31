@@ -1,3 +1,4 @@
+import type { AIConsultantResponse } from "./ai-consultant-types";
 import type { Salon } from "./types";
 
 const KEYWORDS: Record<string, string[]> = {
@@ -47,4 +48,29 @@ export function recommendSalons(query: string, salons: Salon[]): Salon[] {
     .filter((x) => x.score > 0)
     .map((x) => x.salon)
     .slice(0, 4);
+}
+
+export function buildConsultantFallback(
+  userQuery: string,
+  salons: Salon[]
+): AIConsultantResponse {
+  const matches = recommendSalons(userQuery, salons).slice(0, 2);
+  const recommendations = matches.map((s) => {
+    const svc = s.services[0];
+    return {
+      salonId: s.id,
+      salonName: s.name,
+      serviceId: svc.id,
+      serviceName: svc.name,
+      reason: `Strong match for your request in ${s.area} (★${s.rating}).`,
+    };
+  });
+  return {
+    reply:
+      recommendations.length > 0
+        ? `Based on your needs, I've picked the best matches from our Mumbai catalog — book in one tap below.`
+        : "Tell me more about your hair, event, area in Mumbai, or budget — I'll find the perfect salon.",
+    recommendations,
+    provider: "fallback",
+  };
 }

@@ -77,7 +77,7 @@ export function AiFinder({ salons }: Props) {
                 ? `Top ${results.length} matches for “${query}”`
                 : `No strong matches — showing popular picks`}
             </p>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {(results.length > 0 ? results : salons.slice(0, 4)).map((salon) => (
                 <SalonCard key={salon.id} salon={salon} />
               ))}

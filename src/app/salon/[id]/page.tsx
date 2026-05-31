@@ -24,15 +24,16 @@ export default async function SalonPage({ params }: Props) {
 
       <div className="mt-6 grid gap-8 lg:grid-cols-2">
         <div>
-          <div className="relative aspect-video overflow-hidden rounded-2xl bg-rose-50">
+          <div className="relative h-56 overflow-hidden rounded-3xl bg-gradient-to-br from-rose-100 to-fuchsia-50 sm:h-64 lg:aspect-video lg:h-auto lg:min-h-[280px]">
             <Image
               src={salon.image}
               alt={salon.name}
               fill
-              className="object-cover"
+              className="object-cover object-center"
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
           </div>
 
           <a

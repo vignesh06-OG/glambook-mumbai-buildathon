@@ -3,6 +3,8 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import type { AIConsultantResponse, ConsultantMessage } from "@/lib/ai-consultant-types";
+import { buildConsultantFallback } from "@/lib/ai-recommend";
+import { SALONS } from "@/lib/salons";
 
 type ChatEntry = ConsultantMessage & {
   recommendations?: AIConsultantResponse["recommendations"];
@@ -46,7 +48,12 @@ export function GlamBookAIStylist() {
           messages: nextHistory.map(({ role, content }) => ({ role, content })),
         }),
       });
-      const data = (await res.json()) as AIConsultantResponse & { error?: string };
+      let data: AIConsultantResponse & { error?: string };
+      if (res.ok) {
+        data = (await res.json()) as AIConsultantResponse & { error?: string };
+      } else {
+        data = buildConsultantFallback(text, SALONS);
+      }
       setMessages((prev) => [
         ...prev,
         {
@@ -57,11 +64,14 @@ export function GlamBookAIStylist() {
         },
       ]);
     } catch {
+      const data = buildConsultantFallback(text, SALONS);
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: "I couldn't reach the stylist right now. Check your connection and try again.",
+          content: data.reply,
+          recommendations: data.recommendations,
+          provider: data.provider,
         },
       ]);
     } finally {

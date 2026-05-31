@@ -42,11 +42,6 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
       setError("Please select a date.");
       return;
     }
-    if (!isFirebaseConfigured()) {
-      setError("Cloud booking is not configured. Add Firebase keys to .env.local");
-      return;
-    }
-
     setSubmitting(true);
     setError("");
 
@@ -90,7 +85,9 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
         Book your appointment
       </h3>
       <p className="mt-1 text-xs text-stone-500">
-        Saved securely to cloud · Rate after your visit ✨
+        {isFirebaseConfigured()
+          ? "Saved securely to cloud · Rate after your visit ✨"
+          : "Saved on this device · Rate after your visit ✨"}
       </p>
 
       <label className="mt-4 block">

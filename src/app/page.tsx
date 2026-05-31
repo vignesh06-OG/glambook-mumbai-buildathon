@@ -17,13 +17,20 @@ export default function HomePage() {
           <p className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-1.5 text-xs font-medium backdrop-blur">
             <span>💅</span> Trusted by women across Mumbai
           </p>
-          <h1 className="font-display mt-6 max-w-2xl text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
-            Your beauty ritual,{" "}
-            <span className="text-rose-100">one tap away</span>
+          <h1 className="font-hero mt-6 max-w-2xl text-[2.35rem] leading-[1.05] sm:text-5xl lg:text-[3.35rem]">
+            <span className="block drop-shadow-[0_2px_12px_rgba(0,0,0,0.12)]">
+              Your beauty ritual,
+            </span>
+            <span className="font-hero-accent mt-1 block bg-gradient-to-r from-white via-rose-50 to-fuchsia-100 bg-clip-text text-transparent sm:mt-2 sm:text-[2.85rem] lg:text-[3.5rem]">
+              one tap away
+            </span>
           </h1>
-          <p className="mt-5 max-w-xl text-lg text-rose-50/95 leading-relaxed">
-            {SITE_CONFIG.tagline}. Bridal glam, spa days, nails & hair — book verified salons and
-            share honest reviews after every visit.
+          <p className="font-script mt-6 max-w-xl text-2xl leading-snug text-white sm:text-3xl">
+            {SITE_CONFIG.tagline}
+          </p>
+          <p className="mt-4 max-w-xl text-base text-rose-50/95 leading-relaxed sm:text-lg">
+            Bridal glam, spa days, nails & hair — book verified salons and share honest reviews
+            after every visit.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
