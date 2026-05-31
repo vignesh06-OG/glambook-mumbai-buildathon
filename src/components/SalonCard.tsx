@@ -22,7 +22,7 @@ export function SalonCard({ salon, distanceKm, index = 0 }: Props) {
           {hasImage ? (
             <Image
               src={salon.image}
-              alt={`${salon.name} — ${salon.area}`}
+              alt={`${salon.name} — ${salon.tags.slice(0, 2).join(" & ")} salon in ${salon.area}, Mumbai`}
               fill
               className="object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

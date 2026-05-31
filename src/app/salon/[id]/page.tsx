@@ -27,7 +27,7 @@ export default async function SalonPage({ params }: Props) {
           <div className="relative h-56 overflow-hidden rounded-3xl bg-gradient-to-br from-rose-100 to-fuchsia-50 sm:h-64 lg:aspect-video lg:h-auto lg:min-h-[280px]">
             <Image
               src={salon.image}
-              alt={salon.name}
+              alt={`${salon.name} — ${salon.tags.slice(0, 2).join(", ")} in ${salon.area}, Mumbai`}
               fill
               className="object-cover object-center"
               priority
