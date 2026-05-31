@@ -31,7 +31,7 @@ export function Header() {
           </Link>
           <Link
             href="/#salons"
-            className="rounded-full bg-gradient-to-r from-rose-500 to-fuchsia-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-rose-200/60 sm:text-sm"
+            className="rounded-full bg-gradient-to-r from-rose-500 to-fuchsia-500 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-rose-200/60 transition-transform active:scale-95 sm:text-sm"
           >
             Book now
           </Link>

@@ -150,7 +150,7 @@ export function GlamBookAIStylist() {
                           <p className="mt-1 text-xs text-stone-500">{rec.reason}</p>
                           <Link
                             href={`/salon/${rec.salonId}`}
-                            className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-rose-500 to-fuchsia-500 py-2 text-xs font-semibold text-white"
+                            className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-rose-500 to-fuchsia-500 py-2 text-xs font-semibold text-white transition-transform active:scale-95"
                           >
                             Book now →
                           </Link>

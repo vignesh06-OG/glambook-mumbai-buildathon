@@ -163,7 +163,7 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
       <button
         type="submit"
         disabled={submitting}
-        className="mt-6 w-full rounded-full bg-gradient-to-r from-rose-500 via-fuchsia-500 to-rose-500 py-3.5 text-sm font-semibold text-white shadow-lg shadow-rose-200/60 hover:opacity-95 transition disabled:opacity-60"
+        className="mt-6 w-full rounded-full bg-gradient-to-r from-rose-500 via-fuchsia-500 to-rose-500 py-3.5 text-sm font-semibold text-white shadow-lg shadow-rose-200/60 transition-transform hover:opacity-95 active:scale-95 disabled:opacity-60 disabled:active:scale-100"
       >
         {submitting ? "Saving…" : "Confirm booking"}
         {!submitting && service && ` · ${formatPrice(service.price)}`}

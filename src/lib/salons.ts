@@ -1,8 +1,14 @@
 import type { Salon } from "./types";
 
-/** Consistent Unsplash crop — used for all salon hero/card images */
-const img = (id: string) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&h=450&q=85`;
+/** Pre-verified Unsplash URLs only — do not substitute or generate alternatives */
+const SALON_IMAGE_HAIR =
+  "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&h=450&q=80";
+const SALON_IMAGE_SALON =
+  "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=800&h=450&q=80";
+const SALON_IMAGE_GROOMING =
+  "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&h=450&q=80";
+const SALON_IMAGE_BEAUTY =
+  "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=800&h=450&q=80";
 
 export const SALONS: Salon[] = [
   {
@@ -19,7 +25,7 @@ export const SALONS: Salon[] = [
     rating: 4.8,
     reviewCount: 312,
     priceLevel: 3,
-    image: img("photo-1521590832167-7bcbfaa6381f"),
+    image: SALON_IMAGE_SALON,
     tags: ["Luxury", "Hair", "Bridal"],
     openHours: "10:00 AM – 9:00 PM",
     homeService: false,
@@ -43,7 +49,7 @@ export const SALONS: Salon[] = [
     rating: 4.6,
     reviewCount: 189,
     priceLevel: 2,
-    image: img("photo-1540555700478-4be289fbbe23"),
+    image: SALON_IMAGE_BEAUTY,
     tags: ["Spa", "Skin", "Relaxation"],
     openHours: "9:00 AM – 8:30 PM",
     homeService: true,
@@ -66,7 +72,7 @@ export const SALONS: Salon[] = [
     rating: 4.7,
     reviewCount: 156,
     priceLevel: 2,
-    image: img("photo-1585747860715-2ba37e788b70"),
+    image: SALON_IMAGE_GROOMING,
     tags: ["Men", "Grooming", "Beard"],
     openHours: "11:00 AM – 10:00 PM",
     homeService: false,
@@ -91,7 +97,7 @@ export const SALONS: Salon[] = [
     rating: 4.9,
     reviewCount: 428,
     priceLevel: 3,
-    image: img("photo-1512496015851-a90e38ad01d8"),
+    image: SALON_IMAGE_BEAUTY,
     tags: ["Bridal", "Makeup", "Mehendi"],
     openHours: "9:00 AM – 7:00 PM",
     homeService: true,
@@ -114,7 +120,7 @@ export const SALONS: Salon[] = [
     rating: 4.5,
     reviewCount: 98,
     priceLevel: 1,
-    image: img("photo-1632345031438-872ee7dff3c4"),
+    image: SALON_IMAGE_HAIR,
     tags: ["Nails", "Affordable", "Quick"],
     openHours: "10:00 AM – 8:00 PM",
     homeService: false,
@@ -138,7 +144,7 @@ export const SALONS: Salon[] = [
     rating: 4.4,
     reviewCount: 76,
     priceLevel: 2,
-    image: img("photo-1560066984-138d9834a973"),
+    image: SALON_IMAGE_SALON,
     tags: ["Home Service", "Hair", "Skin"],
     openHours: "8:00 AM – 8:00 PM",
     homeService: true,
