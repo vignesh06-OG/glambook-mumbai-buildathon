@@ -57,4 +57,4 @@ Want to run GlamBook locally? Follow these steps:
 
 1. Clone the repository:
 ```bash
-   git clone [Your-GitHub-Repo-Link]
+   git clone (https://github.com/vignesh06-OG/glambook-mumbai-buildathon)
