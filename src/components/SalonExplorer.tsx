@@ -6,20 +6,20 @@ import { MUMBAI_CENTER } from "@/lib/geo";
 import { attachDistances, applySortMode } from "@/lib/salon-sort";
 import { QuickFilters } from "./QuickFilters";
 import { SalonCard } from "./SalonCard";
+import { SalonCardGridSkeleton } from "./Skeletons";
+import { AREAS, SERVICE_CATEGORIES } from "@/lib/salons";
 
 type Props = { salons: Salon[] };
 
-const AREAS = ["All", "Bandra West", "Andheri East", "Colaba", "Juhu", "Powai", "Thane West"];
-const CATEGORIES = ["All", "hair", "skin", "nails", "bridal", "grooming"] as const;
-
 export function SalonExplorer({ salons }: Props) {
   const [search, setSearch] = useState("");
-  const [area, setArea] = useState("All");
-  const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("All");
+  const [area, setArea] = useState("All Areas");
+  const [category, setCategory] = useState<string>("all");
   const [homeOnly, setHomeOnly] = useState(false);
   const [sortMode, setSortMode] = useState<SortMode>("default");
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locStatus, setLocStatus] = useState<"idle" | "loading" | "ok" | "denied">("idle");
+  const [loaded, setLoaded] = useState(false);
 
   const requestLocation = useCallback(() => {
     if (!navigator.geolocation) {
@@ -40,14 +40,15 @@ export function SalonExplorer({ salons }: Props) {
 
   useEffect(() => {
     requestLocation();
+    const t = setTimeout(() => setLoaded(true), 100);
+    return () => clearTimeout(t);
   }, [requestLocation]);
 
   const filtered = useMemo(() => {
     let list = salons.filter((salon) => {
       if (homeOnly && !salon.homeService) return false;
-      if (area !== "All" && salon.area !== area) return false;
-      if (category !== "All" && !salon.services.some((s) => s.category === category))
-        return false;
+      if (area !== "All Areas" && salon.area !== area) return false;
+      if (category !== "all" && !salon.services.some((s) => s.category === category)) return false;
       if (!search.trim()) return true;
       const q = search.toLowerCase();
       return (
@@ -66,35 +67,40 @@ export function SalonExplorer({ salons }: Props) {
   }, [salons, search, area, category, homeOnly, sortMode, userLocation]);
 
   return (
-    <section id="salons" className="scroll-mt-20 py-16">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <section id="salons" className="scroll-mt-20 py-20 px-4 sm:px-6">
+      <div className="mx-auto max-w-7xl">
+        {/* Section header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-8">
           <div>
-            <h2 className="font-display text-2xl font-semibold text-stone-900 sm:text-3xl">
-              Salons women love in Mumbai
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-blush-soft border border-blush/20 px-4 py-1.5 text-xs font-semibold text-blush mb-3">
+              💅 {salons.length}+ Curated Salons
+            </span>
+            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl lg:text-5xl">
+              Salons women love in <span className="gradient-text">Mumbai</span>
             </h2>
-            <p className="mt-2 text-stone-600">
-              Filter, book, ride & review — your complete beauty journey in one place.
+            <p className="mt-2 text-muted max-w-xl">
+              AI-matched to your needs · Filter, book, and review — your complete beauty journey.
             </p>
           </div>
           {locStatus === "ok" && userLocation && (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-800">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              Location on — nearby sorting enabled
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald/10 border border-emerald/20 px-4 py-2 text-xs font-medium text-emerald shrink-0">
+              <span className="h-2 w-2 rounded-full bg-emerald animate-pulse" />
+              Location active · Nearby sorting on
             </span>
           )}
           {locStatus === "denied" && (
             <button
               type="button"
               onClick={requestLocation}
-              className="text-xs font-medium text-rose-600 hover:underline"
+              className="text-xs font-medium text-blush hover:underline shrink-0"
             >
               Enable location for nearby salons
             </button>
           )}
         </div>
 
-        <div className="mt-6">
+        {/* Quick filters */}
+        <div className="mb-6">
           <QuickFilters
             active={sortMode}
             onChange={setSortMode}
@@ -102,80 +108,106 @@ export function SalonExplorer({ salons }: Props) {
           />
         </div>
 
-        <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-rose-100 bg-white p-4 shadow-sm sm:flex-row sm:flex-wrap sm:items-end">
-          <label className="min-w-[200px] flex-1">
-            <span className="text-xs font-medium text-stone-500">Search</span>
-            <input
-              type="search"
-              placeholder="Salon, area, address..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-stone-200 px-3 py-2 text-sm outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100"
-            />
+        {/* Advanced filters */}
+        <div className="glass-light rounded-2xl border border-border p-4 mb-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
+          <label className="min-w-[180px] flex-1">
+            <span className="text-[10px] font-semibold text-muted uppercase tracking-wider block mb-1.5">Search</span>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted text-sm">🔍</span>
+              <input
+                type="search"
+                placeholder="Salon name, area, service..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full rounded-xl border border-border bg-surface-2 px-4 py-2.5 pl-9 text-sm text-foreground outline-none focus:border-blush focus:ring-2 focus:ring-blush/10 transition placeholder:text-muted/50"
+              />
+            </div>
           </label>
-          <label>
-            <span className="text-xs font-medium text-stone-500">Area</span>
+
+          <label className="min-w-[150px]">
+            <span className="text-[10px] font-semibold text-muted uppercase tracking-wider block mb-1.5">Area</span>
             <select
               value={area}
               onChange={(e) => setArea(e.target.value)}
-              className="mt-1 block w-full rounded-xl border border-stone-200 px-3 py-2 text-sm sm:w-40"
+              className="w-full rounded-xl border border-border bg-surface-2 px-3 py-2.5 text-sm text-foreground outline-none focus:border-blush"
             >
               {AREAS.map((a) => (
-                <option key={a} value={a}>
-                  {a}
-                </option>
+                <option key={a} value={a} className="bg-surface-2">{a}</option>
               ))}
             </select>
           </label>
-          <label>
-            <span className="text-xs font-medium text-stone-500">Service</span>
+
+          <label className="min-w-[150px]">
+            <span className="text-[10px] font-semibold text-muted uppercase tracking-wider block mb-1.5">Service</span>
             <select
               value={category}
-              onChange={(e) =>
-                setCategory(e.target.value as (typeof CATEGORIES)[number])
-              }
-              className="mt-1 block w-full rounded-xl border border-stone-200 px-3 py-2 text-sm capitalize sm:w-36"
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full rounded-xl border border-border bg-surface-2 px-3 py-2.5 text-sm text-foreground outline-none focus:border-blush capitalize"
             >
-              {CATEGORIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
+              {SERVICE_CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value} className="bg-surface-2">{c.label}</option>
               ))}
             </select>
           </label>
-          <label className="flex items-center gap-2 pb-2 sm:pb-0">
+
+          <label className="flex items-center gap-2.5 pb-1 sm:pb-0">
             <input
               type="checkbox"
               checked={homeOnly}
               onChange={(e) => setHomeOnly(e.target.checked)}
-              className="rounded border-stone-300 text-rose-600 focus:ring-rose-500"
+              className="h-4 w-4 rounded border-border bg-surface-2 text-blush focus:ring-blush/20 accent-blush"
             />
-            <span className="text-sm text-stone-700">Home service only</span>
+            <span className="text-sm text-foreground font-medium">🏠 Home service</span>
           </label>
+
+          {(search || area !== "All Areas" || category !== "all" || homeOnly) && (
+            <button
+              type="button"
+              onClick={() => { setSearch(""); setArea("All Areas"); setCategory("all"); setHomeOnly(false); }}
+              className="rounded-xl border border-blush/20 bg-blush-soft/30 px-4 py-2.5 text-xs font-semibold text-blush hover:bg-blush/20 transition shrink-0"
+            >
+              ✕ Clear filters
+            </button>
+          )}
         </div>
 
-        <p className="mt-4 text-sm text-stone-500">
-          {filtered.length} salon{filtered.length !== 1 ? "s" : ""} found
+        {/* Results count */}
+        <p className="mb-6 text-sm text-muted">
+          <span className="font-semibold text-foreground">{filtered.length}</span> salon{filtered.length !== 1 ? "s" : ""} found
           {sortMode !== "default" && (
-            <span className="text-rose-600"> · sorted by {sortMode.replace("-", " ")}</span>
+            <span className="ml-2 text-blush">· sorted by {sortMode.replace("-", " ")}</span>
           )}
         </p>
 
-        <div className="mt-6 grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((salon, idx) => (
-            <SalonCard
-              key={salon.id}
-              salon={salon}
-              distanceKm={salon.distanceKm}
-              index={idx}
-            />
-          ))}
-        </div>
-
-        {filtered.length === 0 && (
-          <p className="mt-8 text-center text-stone-500">
-            No salons match your filters. Try another quick filter or clear search.
-          </p>
+        {/* Salon grid */}
+        {!loaded ? (
+          <SalonCardGridSkeleton count={8} />
+        ) : filtered.length === 0 ? (
+          <div className="glass-card rounded-3xl p-16 text-center">
+            <div className="text-5xl mb-4">🔍</div>
+            <h3 className="font-display text-xl font-bold text-foreground mb-2">No salons match your filters</h3>
+            <p className="text-muted max-w-sm mx-auto mb-6 leading-relaxed">
+              Try adjusting your filters or search terms. We have 32+ salons across Mumbai!
+            </p>
+            <button
+              type="button"
+              onClick={() => { setSearch(""); setArea("All Areas"); setCategory("all"); setHomeOnly(false); setSortMode("default"); }}
+              className="rounded-2xl bg-gradient-to-r from-blush to-rose-gold px-6 py-3 text-sm font-semibold text-white shadow-lg hover:opacity-90 transition"
+            >
+              Clear all filters
+            </button>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filtered.map((salon, idx) => (
+              <SalonCard
+                key={salon.id}
+                salon={salon}
+                distanceKm={salon.distanceKm}
+                index={idx}
+              />
+            ))}
+          </div>
         )}
       </div>
     </section>

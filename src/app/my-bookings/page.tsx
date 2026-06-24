@@ -3,20 +3,41 @@ import { MyBookingsList } from "@/components/MyBookingsList";
 
 export default function MyBookingsPage() {
   return (
-    <div className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-rose-100/60 via-transparent to-transparent" />
-      <div className="relative mx-auto max-w-2xl px-4 py-12 sm:px-6">
-        <Link href="/" className="text-sm text-rose-600 hover:underline">
-          ← Home
+    <div className="min-h-screen py-12 px-4 sm:px-6">
+      <div className="mx-auto max-w-3xl">
+        <Link href="/" className="text-sm text-blush hover:underline mb-8 inline-block">
+          ← Back to Home
         </Link>
-        <h1 className="font-display mt-4 text-3xl font-semibold text-stone-900">
-          My bookings
-        </h1>
-        <p className="mt-2 text-stone-600">
-          Rate your visits and help salons — and other women — choose with confidence.
-        </p>
-        <div className="mt-8">
+
+        <div className="mb-10">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-blush-soft border border-blush-soft px-4 py-1.5 text-xs font-semibold text-blush mb-3">
+            📅 Your Booking History
+          </span>
+          <h1 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
+            My Bookings
+          </h1>
+          <p className="mt-3 text-muted max-w-lg">
+            Rate your visits and help salons — and other women — choose with confidence.
+          </p>
+        </div>
+
+        <div className="glass-card rounded-3xl p-8">
           <MyBookingsList />
+        </div>
+
+        {/* Quick actions */}
+        <div className="mt-8 glass-light rounded-2xl p-6 text-center">
+          <p className="text-sm text-muted mb-4">
+            Want to discover new beauty services or get personalized recommendations?
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link href="/beauty-analysis" className="rounded-xl bg-gradient-to-r from-blush to-rose-gold px-5 py-2.5 text-sm font-semibold text-white shadow-lg">
+              🔬 AI Beauty Analysis
+            </Link>
+            <Link href="/#salons" className="rounded-xl border border-border bg-surface-2 px-5 py-2.5 text-sm font-semibold text-foreground hover:border-blush hover:text-blush transition">
+              💅 Browse Salons
+            </Link>
+          </div>
         </div>
       </div>
     </div>

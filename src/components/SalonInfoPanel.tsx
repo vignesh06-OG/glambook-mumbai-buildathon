@@ -1,3 +1,5 @@
+"use client";
+
 import type { Salon } from "@/lib/types";
 import { SalonActions } from "./SalonActions";
 
@@ -5,59 +7,50 @@ type Props = { salon: Salon };
 
 export function SalonInfoPanel({ salon }: Props) {
   return (
-    <div className="rounded-2xl border border-rose-100 bg-gradient-to-br from-white to-rose-50/40 p-6">
-      <h2 className="text-lg font-semibold text-stone-900">Contact & location</h2>
+    <div className="glass-card rounded-3xl p-6 sm:p-8">
+      <h2 className="font-display text-xl font-semibold text-foreground mb-1 flex items-center gap-2">
+        <span>📍</span> Contact & Location
+      </h2>
+      <p className="text-xs text-muted mb-6">Verified salon information</p>
 
-      <dl className="mt-4 space-y-3 text-sm">
-        <div>
-          <dt className="text-xs font-medium uppercase tracking-wide text-stone-400">Address</dt>
-          <dd className="mt-0.5 text-stone-800">{salon.address}</dd>
-        </div>
-        <div>
-          <dt className="text-xs font-medium uppercase tracking-wide text-stone-400">Phone</dt>
-          <dd>
-            <a href={`tel:${salon.phone}`} className="font-medium text-rose-600 hover:underline">
-              {salon.phone}
-            </a>
-          </dd>
-        </div>
-        {salon.email && (
-          <div>
-            <dt className="text-xs font-medium uppercase tracking-wide text-stone-400">Email</dt>
-            <dd>
-              <a href={`mailto:${salon.email}`} className="text-rose-600 hover:underline">
-                {salon.email}
-              </a>
-            </dd>
+      <dl className="space-y-4">
+        {[
+          { label: "Address", value: salon.address, icon: "🏠" },
+          { label: "Phone", value: salon.phone, href: `tel:${salon.phone}`, icon: "📞", isLink: true },
+          ...(salon.email ? [{ label: "Email", value: salon.email, href: `mailto:${salon.email}`, icon: "✉️", isLink: true }] : []),
+          ...(salon.website ? [{ label: "Website", value: "Visit website →", href: salon.website, icon: "🌐", isLink: true, external: true }] : []),
+          { label: "Hours", value: salon.openHours, icon: "🕐" },
+        ].map((item) => (
+          <div key={item.label} className="flex items-start gap-3 py-3 border-b border-border/50 last:border-0">
+            <span className="text-lg mt-0.5">{item.icon}</span>
+            <div className="flex-1 min-w-0">
+              <dt className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-1">{item.label}</dt>
+              {item.isLink ? (
+                <a
+                  href={item.href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                  className="text-sm font-medium text-blush hover:underline transition-colors truncate block"
+                >
+                  {item.value}
+                </a>
+              ) : (
+                <dd className="text-sm text-foreground">{item.value}</dd>
+              )}
+            </div>
           </div>
-        )}
-        {salon.website && (
-          <div>
-            <dt className="text-xs font-medium uppercase tracking-wide text-stone-400">Website</dt>
-            <dd>
-              <a
-                href={salon.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-rose-600 hover:underline"
-              >
-                Visit website →
-              </a>
-            </dd>
-          </div>
-        )}
-        <div>
-          <dt className="text-xs font-medium uppercase tracking-wide text-stone-400">Hours</dt>
-          <dd className="text-stone-800">{salon.openHours}</dd>
-        </div>
+        ))}
+
         {salon.amenities && salon.amenities.length > 0 && (
-          <div>
-            <dt className="text-xs font-medium uppercase tracking-wide text-stone-400">Amenities</dt>
-            <dd className="mt-1 flex flex-wrap gap-1.5">
+          <div className="pt-4 border-t border-border/50">
+            <dt className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-3 flex items-center gap-2">
+              <span>✨</span> Amenities
+            </dt>
+            <dd className="flex flex-wrap gap-2">
               {salon.amenities.map((a) => (
                 <span
                   key={a}
-                  className="rounded-full bg-white px-2.5 py-0.5 text-xs text-stone-600 border border-stone-200"
+                  className="rounded-full border border-border bg-surface-2 px-3 py-1 text-xs text-muted"
                 >
                   {a}
                 </span>
@@ -67,7 +60,7 @@ export function SalonInfoPanel({ salon }: Props) {
         )}
       </dl>
 
-      <div className="mt-6">
+      <div className="mt-6 pt-6 border-t border-border/50">
         <SalonActions salon={salon} variant="detail" />
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { Salon } from "@/lib/types";
 import { getDirectionsUrl, getMapViewUrl } from "@/lib/maps";
 import { BookRideModal } from "./BookRideModal";
@@ -28,7 +29,7 @@ export function SalonActions({ salon, variant = "detail" }: Props) {
     if (navigator.share) {
       navigator.share({
         title: salon.name,
-        text: `Check out ${salon.name} on Mumbai Salon Marketplace`,
+        text: `Check out ${salon.name} on GlamBook AI — Mumbai's beauty marketplace`,
         url,
       }).catch(() => copyLink(url));
     } else {
@@ -43,26 +44,30 @@ export function SalonActions({ salon, variant = "detail" }: Props) {
     });
   }
 
-  const btn =
-    compact
-      ? "flex-1 rounded-lg border border-stone-200 bg-white px-2 py-2 text-[11px] font-semibold text-stone-700 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-700"
-      : "flex items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-700 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-700 transition";
+  const btnBase = compact
+    ? "flex-1 rounded-xl border border-border bg-surface-2 px-2 py-2 text-[10px] font-semibold text-muted hover:border-blush/40 hover:text-blush transition-all active:scale-95"
+    : "flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-2 px-4 py-3 text-sm font-semibold text-muted hover:border-blush/40 hover:text-blush transition-all active:scale-95";
 
   return (
     <>
-      <div className={compact ? "flex gap-1.5" : "grid grid-cols-2 gap-3 sm:grid-cols-4"}>
-        <button type="button" onClick={openMap} className={btn}>
-          {compact ? "🗺️ Map" : "🗺️ View on map"}
+      <div className={compact ? "flex gap-1.5" : "grid grid-cols-2 gap-2 sm:grid-cols-4"}>
+        <button type="button" onClick={openMap} className={btnBase} aria-label="View on map">
+          {compact ? "🗺️" : "🗺️ Map"}
         </button>
-        <button type="button" onClick={openDirections} className={btn}>
-          {compact ? "🧭 Route" : "🧭 Get directions"}
+        <button type="button" onClick={openDirections} className={btnBase} aria-label="Get directions">
+          {compact ? "🧭" : "🧭 Route"}
         </button>
-        <button type="button" onClick={() => setRideOpen(true)} className={`${btn} ${!compact ? "border-amber-200 bg-amber-50 text-amber-900 hover:bg-amber-100" : ""}`}>
-          {compact ? "🛵 Ride" : "🛵 Book ride"}
+        <button
+          type="button"
+          onClick={() => setRideOpen(true)}
+          className={`${btnBase} ${!compact ? "border-gold/20 bg-gold-soft/50 text-gold hover:bg-gold/20" : ""}`}
+          aria-label="Book a ride"
+        >
+          {compact ? "🛵" : "🛵 Ride"}
         </button>
         {salon.phone && (
-          <a href={`tel:${salon.phone}`} className={btn}>
-            {compact ? "📞 Call" : "📞 Call salon"}
+          <a href={`tel:${salon.phone}`} className={btnBase} aria-label="Call salon">
+            {compact ? "📞" : "📞 Call"}
           </a>
         )}
       </div>
@@ -74,18 +79,26 @@ export function SalonActions({ salon, variant = "detail" }: Props) {
               href={`https://wa.me/${salon.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full bg-emerald-50 px-4 py-2 text-xs font-semibold text-emerald-800 hover:bg-emerald-100"
+              className="rounded-full border border-emerald/20 bg-emerald/10 px-4 py-2 text-xs font-semibold text-emerald hover:bg-emerald/20 transition"
             >
-              WhatsApp
+              💬 WhatsApp
             </a>
           )}
           <button
             type="button"
             onClick={shareSalon}
-            className="rounded-full bg-violet-50 px-4 py-2 text-xs font-semibold text-violet-800 hover:bg-violet-100"
+            className={`rounded-full border border-violet/20 bg-violet/10 px-4 py-2 text-xs font-semibold transition-all ${
+              copied ? "border-emerald/30 bg-emerald/20 text-emerald" : "border-violet/20 text-violet hover:bg-violet/20"
+            }`}
           >
-            {copied ? "Link copied!" : "Share salon link"}
+            {copied ? "✓ Link copied!" : "↗ Share salon"}
           </button>
+          <Link
+            href={`/salon/${salon.id}`}
+            className="rounded-full border border-blush/20 bg-blush-soft/30 px-4 py-2 text-xs font-semibold text-blush hover:bg-blush/20 transition"
+          >
+            → Full profile
+          </Link>
         </div>
       )}
 

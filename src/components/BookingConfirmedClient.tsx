@@ -16,78 +16,111 @@ type Props = {
 };
 
 export function BookingConfirmedClient({
-  bookingId,
-  salon,
-  salonId,
-  service,
-  date,
-  time,
-  name,
-  phone,
-  price,
+  bookingId, salon, salonId, service, date, time, name, phone, price,
 }: Props) {
   return (
-    <div className="mx-auto max-w-lg px-4 py-16 sm:px-6 text-center">
-      <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-rose-100 to-fuchsia-100 text-4xl shadow-inner">
-        ✨
-      </div>
-      <h1 className="font-display mt-6 text-2xl font-semibold text-stone-900">
-        You&apos;re all set, {name.split(" ")[0]}!
-      </h1>
-      <p className="mt-2 text-stone-600">
-        Your glow-up at <strong>{salon}</strong> is booked.
-      </p>
+    <div className="min-h-screen py-10 px-4 sm:px-6">
+      <div className="mx-auto max-w-lg">
+        {/* Success animation */}
+        <div className="text-center mb-10">
+          <div className="relative mx-auto mb-8 h-24 w-24">
+            {/* Animated rings */}
+            <div className="absolute inset-0 rounded-full border-2 border-blush/20 animate-ping" style={{ animationDuration: "3s" }} />
+            <div className="absolute inset-2 rounded-full border border-emerald/20 animate-ping" style={{ animationDuration: "2s", animationDelay: "0.5s" }} />
+            {/* Center icon */}
+            <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-emerald/20 to-blush/20 text-5xl shadow-xl shadow-emerald/10 border border-emerald/20">
+              ✅
+            </div>
+          </div>
 
-      <dl className="mt-8 rounded-3xl border border-rose-100 bg-white p-6 text-left text-sm shadow-sm">
-        <div className="flex justify-between border-b border-rose-50 py-3">
-          <dt className="text-stone-500">Service</dt>
-          <dd className="font-medium text-stone-900">{service}</dd>
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-2">
+            You&apos;re all set, {name.split(" ")[0]}!
+          </h1>
+          <p className="text-muted leading-relaxed">
+            Your beauty appointment at <strong className="text-foreground">{salon}</strong> is confirmed.
+          </p>
         </div>
-        <div className="flex justify-between border-b border-rose-50 py-3">
-          <dt className="text-stone-500">Date & time</dt>
-          <dd className="font-medium">
-            {date} at {time}
-          </dd>
-        </div>
-        <div className="flex justify-between border-b border-rose-50 py-3">
-          <dt className="text-stone-500">Phone</dt>
-          <dd className="font-medium">{phone}</dd>
-        </div>
-        <div className="flex justify-between py-3">
-          <dt className="text-stone-500">Amount</dt>
-          <dd className="font-semibold text-rose-600">
-            {price > 0 ? formatPrice(price) : "—"}
-          </dd>
-        </div>
-      </dl>
 
-      <div className="mt-8 rounded-2xl border border-fuchsia-100 bg-fuchsia-50/50 p-5 text-left">
-        <p className="text-sm font-semibold text-fuchsia-900">After your visit</p>
-        <p className="mt-1 text-xs text-stone-600 leading-relaxed">
-          Once you&apos;re done at the salon, come back and rate your experience.
-          ≤3★ — we&apos;ll ask what to improve. 4–5★ — tell us what you loved!
-        </p>
-        <Link
-          href={`/review/${bookingId}`}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-rose-500 to-fuchsia-500 py-3 text-sm font-semibold text-white shadow-md"
-        >
-          Rate after visit ★
-        </Link>
-      </div>
+        {/* Booking details card */}
+        <div className="glass-card rounded-3xl p-6 sm:p-8 mb-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="h-10 w-10 rounded-xl bg-blush-soft flex items-center justify-center text-lg">
+              📅
+            </div>
+            <div>
+              <p className="text-xs text-muted uppercase tracking-wider font-semibold">Booking Details</p>
+              <p className="text-xs text-muted/60 mt-0.5">Confirmed · Cloud synced</p>
+            </div>
+          </div>
 
-      <div className="mt-4 flex flex-col gap-2">
-        <Link
-          href="/my-bookings"
-          className="text-sm text-rose-600 hover:underline"
-        >
-          View my bookings
-        </Link>
-        <Link href={`/salon/${salonId}`} className="text-sm text-stone-500 hover:text-rose-600">
-          Back to salon
-        </Link>
-        <Link href="/" className="text-sm text-stone-500 hover:text-rose-600">
-          Home
-        </Link>
+          <dl className="space-y-4">
+            {[
+              { label: "Service", value: service, icon: "💅" },
+              { label: "Date & Time", value: `${date} at ${time}`, icon: "🗓️" },
+              { label: "Phone", value: phone, icon: "📞", isLink: true, href: `tel:${phone}` },
+              { label: "Salon", value: salon, icon: "🏠" },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center justify-between py-3 border-b border-border/50 last:border-0 last:pb-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">{item.icon}</span>
+                  <span className="text-xs text-muted uppercase tracking-wider font-semibold">{item.label}</span>
+                </div>
+                {item.isLink && item.href ? (
+                  <a href={item.href} className="text-sm font-semibold text-blush hover:underline">{item.value}</a>
+                ) : (
+                  <span className="text-sm font-semibold text-foreground text-right">{item.value}</span>
+                )}
+              </div>
+            ))}
+            {price > 0 && (
+              <div className="flex items-center justify-between pt-3 border-t border-border">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">💰</span>
+                  <span className="text-xs text-muted uppercase tracking-wider font-semibold">Amount</span>
+                </div>
+                <span className="font-display text-xl font-bold gradient-text">{formatPrice(price)}</span>
+              </div>
+            )}
+          </dl>
+        </div>
+
+        {/* After visit prompt */}
+        <div className="glass-light rounded-2xl border border-gold/20 p-6 mb-6">
+          <div className="flex items-start gap-4">
+            <div className="text-3xl shrink-0">⭐</div>
+            <div className="flex-1">
+              <p className="font-semibold text-foreground text-sm mb-1">After your visit</p>
+              <p className="text-xs text-muted leading-relaxed">
+                Come back and rate your experience. ≤3★ — share what could improve. 4–5★ — tell us what made it special!
+              </p>
+            </div>
+          </div>
+          <Link
+            href={`/review/${bookingId}`}
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blush to-rose-gold py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:opacity-90 active:scale-95"
+          >
+            ★ Rate after your visit
+          </Link>
+        </div>
+
+        {/* Navigation */}
+        <div className="glass-light rounded-2xl p-5">
+          <p className="text-xs text-muted/60 text-center mb-4">Quick actions</p>
+          <div className="grid grid-cols-3 gap-3">
+            <Link href="/my-bookings" className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-surface-2 p-3 transition-all hover:border-blush/30 hover:bg-blush-soft/10">
+              <span className="text-lg">📅</span>
+              <span className="text-[10px] text-muted font-semibold">Bookings</span>
+            </Link>
+            <Link href={`/salon/${salonId}`} className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-surface-2 p-3 transition-all hover:border-blush/30 hover:bg-blush-soft/10">
+              <span className="text-lg">🏠</span>
+              <span className="text-[10px] text-muted font-semibold">Salon</span>
+            </Link>
+            <Link href="/beauty-analysis" className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-surface-2 p-3 transition-all hover:border-blush/30 hover:bg-blush-soft/10">
+              <span className="text-lg">🔬</span>
+              <span className="text-[10px] text-muted font-semibold">AI Analysis</span>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

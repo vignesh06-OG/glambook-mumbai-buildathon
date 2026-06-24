@@ -32,28 +32,23 @@ export function SalonReviews({ salon }: Props) {
         if (!cancelled) setLoading(false);
       }
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [salon.id]);
 
-  const displayRating =
-    stats.count > 0 ? stats.average.toFixed(1) : salon.rating.toFixed(1);
+  const displayRating = stats.count > 0 ? stats.average.toFixed(1) : salon.rating.toFixed(1);
   const displayCount = stats.count > 0 ? stats.count : salon.reviewCount;
 
   return (
-    <section className="mt-10 rounded-3xl border border-rose-100 bg-gradient-to-br from-white to-rose-50/50 p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <section className="glass-card rounded-3xl p-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div>
-          <h2 className="font-display text-xl font-semibold text-stone-900">
-            Guest reviews
-          </h2>
-          <p className="mt-1 text-sm text-stone-600">
-            <span className="text-amber-500 font-semibold">★ {displayRating}</span>
-            <span className="text-stone-400"> · </span>
+          <h2 className="font-display text-xl font-semibold text-foreground">Guest Reviews</h2>
+          <p className="mt-1 text-sm text-muted">
+            <span className="text-gold font-semibold">★ {displayRating}</span>
+            <span className="text-muted"> · </span>
             {displayCount} review{displayCount !== 1 ? "s" : ""}
             {stats.count > 0 && (
-              <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-semibold text-rose-700">
+              <span className="ml-2 rounded-full bg-emerald/20 px-2 py-0.5 text-[10px] font-semibold text-emerald">
                 Firestore · live
               </span>
             )}
@@ -63,103 +58,97 @@ export function SalonReviews({ salon }: Props) {
           <button
             type="button"
             onClick={() => setShowInsights(!showInsights)}
-            className="rounded-full border border-fuchsia-200 bg-fuchsia-50 px-4 py-2 text-xs font-semibold text-fuchsia-800 hover:bg-fuchsia-100"
+            className="rounded-full border border-violet/20 bg-violet/10 px-4 py-2 text-xs font-semibold text-violet hover:bg-violet/20 transition"
           >
-            {showInsights ? "Hide" : "Salon"} feedback dashboard
+            {showInsights ? "Hide" : "View"} feedback insights
           </button>
         )}
       </div>
 
       {showInsights && insights && stats.count > 0 && (
-        <div className="mt-6 rounded-2xl border border-fuchsia-100 bg-white p-5">
-          <h3 className="text-sm font-bold text-fuchsia-900">
-            💡 Insights for {salon.name} (salon owner view)
+        <div className="glass-light rounded-2xl border border-border p-5 mb-6">
+          <h3 className="text-sm font-bold text-foreground mb-1 flex items-center gap-2">
+            <span>🤖</span> Salon Feedback Dashboard
           </h3>
-          <p className="mt-1 text-xs text-stone-500">
-            Based on real guest ratings from Firestore
-          </p>
+          <p className="text-xs text-muted mb-4">Based on real guest ratings from Firestore</p>
 
           {insights.suggestions.length > 0 && (
-            <ul className="mt-4 space-y-2">
-              {insights.suggestions.map((s, i) => (
-                <li
-                  key={i}
-                  className="flex gap-2 rounded-xl bg-amber-50 px-3 py-2 text-xs text-amber-900"
-                >
-                  <span>→</span>
-                  {s}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {insights.needsImprovement.length > 0 && (
-            <div className="mt-5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-rose-600">
-                Issues to fix (≤3★)
-              </p>
-              <ul className="mt-2 space-y-2">
-                {insights.needsImprovement.map((item) => (
-                  <li
-                    key={item.text}
-                    className="rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-900"
-                  >
-                    “{item.text}” <span className="text-rose-400">×{item.count}</span>
+            <div className="mb-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gold mb-2">💡 AI Suggestions</p>
+              <ul className="space-y-2">
+                {insights.suggestions.map((s, i) => (
+                  <li key={i} className="flex gap-2 rounded-xl bg-gold-soft/30 border border-gold/10 px-3 py-2 text-xs text-foreground/80">
+                    <span className="text-gold shrink-0">→</span>{s}
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          {insights.appreciated.length > 0 && (
-            <div className="mt-5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">
-                Guests appreciate (4–5★)
-              </p>
-              <ul className="mt-2 space-y-2">
-                {insights.appreciated.map((item) => (
-                  <li
-                    key={item.text}
-                    className="rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-900"
-                  >
-                    “{item.text}” <span className="text-emerald-400">×{item.count}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <div className="grid gap-4 sm:grid-cols-2">
+            {insights.needsImprovement.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-rose-400 mb-2">Needs Improvement (≤3★)</p>
+                <ul className="space-y-2">
+                  {insights.needsImprovement.map((item) => (
+                    <li key={item.text} className="rounded-lg bg-rose-400/10 border border-rose-400/10 px-3 py-2 text-xs text-muted">
+                      "{item.text}" <span className="text-rose-400 ml-1">×{item.count}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {insights.appreciated.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-emerald mb-2">Loved (4–5★)</p>
+                <ul className="space-y-2">
+                  {insights.appreciated.map((item) => (
+                    <li key={item.text} className="rounded-lg bg-emerald/10 border border-emerald/10 px-3 py-2 text-xs text-muted">
+                      "{item.text}" <span className="text-emerald ml-1">×{item.count}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
       {loading ? (
-        <p className="mt-6 text-center text-sm text-stone-400 py-6">Loading reviews…</p>
+        <p className="text-center text-sm text-muted py-6">Loading reviews…</p>
       ) : reviews.length === 0 ? (
-        <p className="mt-6 text-center text-sm text-stone-500 py-6">
-          Be the first to review after your visit — book & rate to help other women choose wisely ✨
-        </p>
+        <div className="text-center py-8">
+          <p className="text-3xl mb-3">⭐</p>
+          <p className="text-sm text-muted leading-relaxed">
+            Be the first to review after your visit — book & rate to help other women choose with confidence ✨
+          </p>
+        </div>
       ) : (
-        <ul className="mt-6 space-y-4">
+        <ul className="space-y-4">
           {reviews.slice(0, 6).map((r) => (
-            <li
-              key={r.id}
-              className="rounded-2xl border border-rose-50 bg-white p-4 shadow-sm"
-            >
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-stone-800">{r.customerName}</p>
-                <span className="text-amber-500 text-sm">
-                  {"★".repeat(r.rating)}
-                  <span className="text-stone-300">{"★".repeat(5 - r.rating)}</span>
-                </span>
+            <li key={r.id} className="glass-light rounded-2xl p-4 border border-border/50">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blush to-violet flex items-center justify-center text-xs font-bold text-white">
+                    {r.customerName.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{r.customerName}</p>
+                    <p className="text-[10px] text-muted">
+                      {new Date(r.createdAt).toLocaleDateString("en-IN", {
+                        day: "numeric", month: "short", year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-0.5">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <span key={s} className={`text-sm ${s <= r.rating ? "text-gold" : "text-border"}`}>★</span>
+                  ))}
+                </div>
               </div>
-              <p className="mt-2 text-sm text-stone-600 leading-relaxed">
+              <p className="text-sm text-muted leading-relaxed">
                 {r.rating <= 3 ? r.improveFeedback : r.appreciateFeedback}
-              </p>
-              <p className="mt-2 text-[10px] text-stone-400">
-                {new Date(r.createdAt).toLocaleDateString("en-IN", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })}
               </p>
             </li>
           ))}

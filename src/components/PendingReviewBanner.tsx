@@ -3,53 +3,46 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getPendingReviewBookings } from "@/lib/bookings";
+import type { StoredBooking } from "@/lib/storage-types";
 
 export function PendingReviewBanner() {
-  const [pending, setPending] = useState(0);
-  const [firstId, setFirstId] = useState<string | null>(null);
+  const [pending, setPending] = useState<StoredBooking[]>([]);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
         const list = await getPendingReviewBookings();
-        if (!cancelled) {
-          setPending(list.length);
-          setFirstId(list[0]?.id ?? null);
-        }
-      } catch {
-        /* Firebase not configured */
-      }
+        if (!cancelled) setPending(list.slice(0, 3));
+      } catch { /* silent */ }
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
-  if (pending === 0) return null;
+  if (pending.length === 0) return null;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 -mb-6 relative z-10">
-      <div className="flex flex-col gap-3 rounded-2xl border border-fuchsia-200 bg-gradient-to-r from-rose-50 to-fuchsia-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-stone-800">
-          <span className="font-semibold text-fuchsia-800">✨ {pending} visit{pending > 1 ? "s" : ""}</span>{" "}
-          waiting for your review — help salons shine!
-        </p>
-        <div className="flex gap-2">
-          {firstId && (
+    <div className="glass-card rounded-2xl p-4 mx-4 sm:mx-0 border border-gold/20 bg-gold-soft/20">
+      <div className="flex items-center gap-3 flex-wrap">
+        <div className="text-2xl">⭐</div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-foreground">
+            You have {pending.length} unreviewed {pending.length === 1 ? "booking" : "bookings"}
+          </p>
+          <p className="text-xs text-muted mt-0.5">
+            Rate your visits — help salons improve and other women choose wisely ✨
+          </p>
+        </div>
+        <div className="flex gap-2 shrink-0">
+          {pending.slice(0, 2).map((b) => (
             <Link
-              href={`/review/${firstId}`}
-              className="rounded-full bg-fuchsia-600 px-4 py-2 text-xs font-semibold text-white"
+              key={b.id}
+              href={`/review/${b.id}`}
+              className="rounded-full bg-gradient-to-r from-blush to-rose-gold px-4 py-2 text-xs font-semibold text-white shadow"
             >
-              Rate now
+              ★ Rate {b.salonName.split(" ")[0]}
             </Link>
-          )}
-          <Link
-            href="/my-bookings"
-            className="rounded-full border border-fuchsia-200 bg-white px-4 py-2 text-xs font-semibold text-fuchsia-800"
-          >
-            My bookings
-          </Link>
+          ))}
         </div>
       </div>
     </div>

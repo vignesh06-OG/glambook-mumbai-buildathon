@@ -25,8 +25,8 @@ export function QuickFilters({ active, onChange, locationEnabled }: Props) {
         onClick={() => onChange("default")}
         className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition ${
           active === "default"
-            ? "bg-stone-900 text-white"
-            : "bg-white border border-stone-200 text-stone-700 hover:border-rose-300"
+            ? "bg-gradient-to-r from-blush to-rose-gold text-white shadow-lg"
+            : "glass-light border border-border text-muted hover:border-blush/40 hover:text-foreground"
         }`}
       >
         All salons
@@ -37,16 +37,12 @@ export function QuickFilters({ active, onChange, locationEnabled }: Props) {
           type="button"
           onClick={() => onChange(f.id)}
           disabled={f.id === "nearby" && !locationEnabled}
-          title={
-            f.id === "nearby" && !locationEnabled
-              ? "Enable location to sort by distance"
-              : undefined
-          }
+          title={f.id === "nearby" && !locationEnabled ? "Enable location to sort by distance" : undefined}
           className={`shrink-0 flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition ${
             active === f.id
-              ? "bg-rose-600 text-white shadow-sm"
-              : "bg-white border border-stone-200 text-stone-700 hover:border-rose-300"
-          } ${f.id === "nearby" && !locationEnabled ? "opacity-50 cursor-not-allowed" : ""}`}
+              ? "bg-gradient-to-r from-blush to-rose-gold text-white shadow-lg"
+              : "glass-light border border-border text-muted hover:border-blush/40 hover:text-foreground"
+          } ${f.id === "nearby" && !locationEnabled ? "opacity-40 cursor-not-allowed" : ""}`}
         >
           <span>{f.icon}</span>
           {f.label}

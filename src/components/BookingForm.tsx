@@ -79,23 +79,23 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-3xl border border-rose-100 bg-white/95 p-6 shadow-lg shadow-rose-100/40 backdrop-blur"
+      className="rounded-3xl border border-border bg-surface-1/80 p-6 shadow-lg shadow-blush/10 backdrop-blur-xl"
     >
-      <h3 className="font-display text-lg font-semibold text-stone-900">
+      <h3 className="font-display text-lg font-semibold text-foreground">
         Book your appointment
       </h3>
-      <p className="mt-1 text-xs text-stone-500">
+      <p className="mt-1 text-xs text-muted">
         {isFirebaseConfigured()
           ? "Saved securely to cloud · Rate after your visit ✨"
           : "Saved on this device · Rate after your visit ✨"}
       </p>
 
       <label className="mt-4 block">
-        <span className="text-xs font-medium text-stone-500">Service</span>
+        <span className="text-xs font-medium text-muted">Service</span>
         <select
           value={serviceId}
           onChange={(e) => setServiceId(e.target.value)}
-          className="mt-1 w-full rounded-xl border border-rose-100 bg-rose-50/30 px-3 py-2.5 text-sm focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-100"
+          className="mt-1 w-full rounded-xl border border-border bg-surface-2 px-3 py-2.5 text-sm text-foreground focus:border-blush focus:outline-none focus:ring-2 focus:ring-blush/20 transition-colors"
         >
           {salon.services.map((s) => (
             <option key={s.id} value={s.id}>
@@ -107,22 +107,22 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="text-xs font-medium text-stone-500">Date</span>
+          <span className="text-xs font-medium text-muted">Date</span>
           <input
             type="date"
             value={date}
             min={new Date().toISOString().split("T")[0]}
             onChange={(e) => setDate(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-rose-100 bg-rose-50/30 px-3 py-2.5 text-sm focus:border-rose-300 focus:outline-none"
+            className="mt-1 w-full rounded-xl border border-border bg-surface-2 px-3 py-2.5 text-sm text-foreground focus:border-blush focus:outline-none transition-colors [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-70"
             required
           />
         </label>
         <label className="block">
-          <span className="text-xs font-medium text-stone-500">Time</span>
+          <span className="text-xs font-medium text-muted">Time</span>
           <select
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-rose-100 bg-rose-50/30 px-3 py-2.5 text-sm"
+            className="mt-1 w-full rounded-xl border border-border bg-surface-2 px-3 py-2.5 text-sm text-foreground focus:border-blush focus:outline-none transition-colors"
           >
             {TIME_SLOTS.map((t) => (
               <option key={t} value={t}>
@@ -135,35 +135,39 @@ export function BookingForm({ salon, preselectedServiceId }: Props) {
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="text-xs font-medium text-stone-500">Your name</span>
+          <span className="text-xs font-medium text-muted">Your name</span>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Priya Sharma"
-            className="mt-1 w-full rounded-xl border border-rose-100 bg-rose-50/30 px-3 py-2.5 text-sm focus:border-rose-300 focus:outline-none"
+            className="mt-1 w-full rounded-xl border border-border bg-surface-2 px-3 py-2.5 text-sm text-foreground placeholder:text-muted/50 focus:border-blush focus:outline-none transition-colors"
             required
           />
         </label>
         <label className="block">
-          <span className="text-xs font-medium text-stone-500">Phone</span>
+          <span className="text-xs font-medium text-muted">Phone</span>
           <input
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
             placeholder="9876543210"
-            className="mt-1 w-full rounded-xl border border-rose-100 bg-rose-50/30 px-3 py-2.5 text-sm focus:border-rose-300 focus:outline-none"
+            className="mt-1 w-full rounded-xl border border-border bg-surface-2 px-3 py-2.5 text-sm text-foreground placeholder:text-muted/50 focus:border-blush focus:outline-none transition-colors"
             required
           />
         </label>
       </div>
 
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && (
+        <p className="mt-3 text-sm text-rose-400 bg-rose-400/10 border border-rose-400/20 rounded-xl px-3 py-2.5">
+          {error}
+        </p>
+      )}
 
       <button
         type="submit"
         disabled={submitting}
-        className="mt-6 w-full rounded-full bg-gradient-to-r from-rose-500 via-fuchsia-500 to-rose-500 py-3.5 text-sm font-semibold text-white shadow-lg shadow-rose-200/60 transition-transform hover:opacity-95 active:scale-95 disabled:opacity-60 disabled:active:scale-100"
+        className="mt-6 w-full rounded-full bg-gradient-to-r from-blush to-rose-gold py-3.5 text-sm font-semibold text-white shadow-lg shadow-blush/20 transition-all hover:opacity-90 active:scale-95 disabled:opacity-60 disabled:active:scale-100"
       >
         {submitting ? "Saving…" : "Confirm booking"}
         {!submitting && service && ` · ${formatPrice(service.price)}`}

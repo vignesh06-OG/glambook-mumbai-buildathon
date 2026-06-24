@@ -8,21 +8,13 @@ import { saveReview } from "@/lib/reviews";
 import { StarRating } from "./StarRating";
 
 const ISSUE_TAGS = [
-  "Long wait time",
-  "Staff attitude",
-  "Cleanliness",
-  "Service quality",
-  "Pricing",
-  "Booking confusion",
+  "Long wait time", "Staff attitude", "Cleanliness",
+  "Service quality", "Pricing", "Booking confusion",
 ];
 
 const LOVE_TAGS = [
-  "Amazing stylist",
-  "Relaxing vibe",
-  "Great results",
-  "Friendly staff",
-  "Value for money",
-  "Easy booking",
+  "Amazing stylist", "Relaxing vibe", "Great results",
+  "Friendly staff", "Value for money", "Easy booking",
 ];
 
 type Step = "rating" | "feedback" | "thanks";
@@ -37,6 +29,7 @@ export function ReviewFlow({ booking }: Props) {
   const [appreciateText, setAppreciateText] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const isLow = rating > 0 && rating <= 3;
   const isHigh = rating >= 4;
@@ -48,16 +41,12 @@ export function ReviewFlow({ booking }: Props) {
     );
   }
 
-  function goToFeedback() {
-    if (rating < 1) return;
-    setStep("feedback");
-  }
-
   async function submitReview() {
     if (isLow && improveText.trim().length < 10) return;
     if (isHigh && appreciateText.trim().length < 10) return;
 
     setSubmitting(true);
+    setError("");
     try {
       await saveReview({
         bookingId: booking.id,
@@ -72,7 +61,7 @@ export function ReviewFlow({ booking }: Props) {
       await markBookingReviewed(booking.id);
       setStep("thanks");
     } catch {
-      alert("Could not save your review. Please check your connection and try again.");
+      setError("Could not save your review. Please check your connection and try again.");
     } finally {
       setSubmitting(false);
     }
@@ -80,175 +69,251 @@ export function ReviewFlow({ booking }: Props) {
 
   if (step === "thanks") {
     return (
-      <div className="text-center">
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-rose-100 to-fuchsia-100 text-4xl">
-          💕
+      <div className="glass-card rounded-3xl p-8 sm:p-12 text-center anim-pop-in">
+        {/* Success animation */}
+        <div className="relative mx-auto mb-8 h-24 w-24">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blush/30 to-emerald/20 animate-pulse-glow" />
+          <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-emerald/20 to-blush/20 text-5xl">
+            {isLow ? "🤝" : "💕"}
+          </div>
         </div>
-        <h1 className="font-display mt-6 text-2xl font-semibold text-stone-900">
+
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mb-3">
           Thank you, {booking.customerName.split(" ")[0]}!
         </h1>
-        <p className="mt-3 text-stone-600 leading-relaxed">
-          Your voice helps <strong>{booking.salonName}</strong> glow brighter and helps
-          other women book with confidence.
+        <p className="text-muted leading-relaxed max-w-sm mx-auto">
+          Your review helps <strong className="text-foreground">{booking.salonName}</strong> improve
+          and guides other women to book with confidence.
         </p>
-        {isLow && (
-          <p className="mt-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-800">
-            We&apos;ve shared your feedback with the salon so they can improve your
-            next visit.
-          </p>
+
+        {isLow ? (
+          <div className="mt-6 rounded-2xl bg-rose-400/10 border border-rose-400/20 p-4 text-left">
+            <p className="text-xs font-semibold text-rose-400 mb-1 flex items-center gap-2">
+              <span>📝</span> Your feedback is shared with the salon
+            </p>
+            <p className="text-xs text-muted leading-relaxed">
+              They use this to train their team and improve the experience for every guest.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-6 rounded-2xl bg-emerald/10 border border-emerald/20 p-4 text-left">
+            <p className="text-xs font-semibold text-emerald mb-1 flex items-center gap-2">
+              <span>⭐</span> Your appreciation reaches the salon team
+            </p>
+            <p className="text-xs text-muted leading-relaxed">
+              Positive reviews like yours help great salons grow and serve more women.
+            </p>
+          </div>
         )}
-        {isHigh && (
-          <p className="mt-4 rounded-xl bg-fuchsia-50 px-4 py-3 text-sm text-fuchsia-900">
-            So glad you loved it! Your appreciation means the world to the team.
-          </p>
-        )}
-        <button
-          type="button"
-          onClick={() => router.push(`/salon/${booking.salonId}`)}
-          className="mt-8 rounded-full bg-gradient-to-r from-rose-500 to-fuchsia-500 px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-200"
-        >
-          Back to salon
-        </button>
-        <button
-          type="button"
-          onClick={() => router.push("/my-bookings")}
-          className="mt-3 block w-full text-sm text-rose-600 hover:underline"
-        >
-          View my bookings
-        </button>
+
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => router.push(`/salon/${booking.salonId}`)}
+            className="rounded-2xl bg-gradient-to-r from-blush to-rose-gold px-8 py-3.5 text-sm font-semibold text-white shadow-lg hover:opacity-90 transition-all active:scale-95"
+          >
+            View {booking.salonName.split(" ")[0]}
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/my-bookings")}
+            className="rounded-2xl border border-border bg-surface-2 px-8 py-3.5 text-sm font-semibold text-muted hover:border-blush hover:text-blush transition"
+          >
+            My bookings
+          </button>
+        </div>
       </div>
     );
   }
 
   if (step === "feedback") {
     return (
-      <div className="rounded-3xl border border-rose-100 bg-white/90 p-6 shadow-xl shadow-rose-100/50 backdrop-blur sm:p-8">
-        <p className="text-center text-sm font-medium text-rose-600">
-          {isLow ? "We want to make it right" : "We'd love to hear more"}
-        </p>
-        <h1 className="font-display mt-2 text-center text-2xl font-semibold text-stone-900">
-          {isLow ? "What can we improve?" : "Tell us what you loved"}
-        </h1>
+      <div className="glass-card rounded-3xl p-8 sm:p-10 anim-fade-up">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <span className="text-sm font-medium text-blush">{isLow ? "Help us improve" : "Share the love"}</span>
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mt-2">
+            {isLow ? "What can we improve?" : "What did you love?"}
+          </h1>
+          <div className="mt-3 inline-flex items-center gap-2 rounded-xl bg-surface-2 border border-border px-4 py-2">
+            <span className="text-sm text-muted">at</span>
+            <span className="font-semibold text-foreground">{booking.salonName}</span>
+            <span className="text-muted">·</span>
+            <span className="text-sm text-muted">{booking.serviceName}</span>
+          </div>
+        </div>
 
+        {/* Rating display */}
+        <div className="mb-6 text-center">
+          <StarRating value={rating} readOnly size="md" />
+        </div>
+
+        {/* Feedback text */}
         {isLow ? (
-          <>
-            <p className="mt-3 text-center text-sm text-stone-600">
-              Thank you for being honest — your feedback helps the salon fix issues
-              for every guest.
+          <div className="space-y-4">
+            <p className="text-sm text-muted leading-relaxed">
+              Thank you for being honest — your feedback directly helps <strong className="text-foreground">{booking.salonName}</strong> serve you better next time.
             </p>
             <textarea
               value={improveText}
               onChange={(e) => setImproveText(e.target.value)}
-              placeholder="e.g. Wait was long, staff seemed rushed, room could be cleaner..."
+              placeholder="e.g. The wait was longer than expected, but the haircut itself was perfect..."
               rows={4}
-              className="mt-5 w-full rounded-2xl border border-rose-200 bg-rose-50/30 px-4 py-3 text-sm outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100"
+              className="w-full rounded-2xl border border-rose-400/20 bg-surface-2 px-4 py-3 text-sm text-foreground outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-400/10 transition placeholder:text-muted/50 resize-none"
+              aria-label="What could be improved"
             />
-            <p className="mt-4 text-xs font-medium text-stone-500">Quick issues (tap all that apply)</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {ISSUE_TAGS.map((tag) => (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => toggleTag(tag, "issue")}
-                  className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
-                    selectedTags.includes(`issue:${tag}`)
-                      ? "bg-rose-600 text-white"
-                      : "bg-stone-100 text-stone-600 hover:bg-rose-50"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
+            <div>
+              <p className="text-xs font-semibold text-muted mb-3 uppercase tracking-wider">Quick issues (tap all that apply)</p>
+              <div className="flex flex-wrap gap-2">
+                {ISSUE_TAGS.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => toggleTag(tag, "issue")}
+                    className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+                      selectedTags.includes(`issue:${tag}`)
+                        ? "bg-rose-400 text-white shadow-md"
+                        : "border border-border text-muted hover:border-rose-400/50 hover:text-rose-400 bg-surface-2"
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
             </div>
-          </>
+          </div>
         ) : (
-          <>
-            <p className="mt-3 text-center text-sm text-stone-600">
-              Thank you for the wonderful rating! What did you appreciate most about
-              your experience?
+          <div className="space-y-4">
+            <p className="text-sm text-muted leading-relaxed">
+              We're thrilled you had a great experience! What stood out most? Your words help other women discover this salon.
             </p>
             <textarea
               value={appreciateText}
               onChange={(e) => setAppreciateText(e.target.value)}
-              placeholder="e.g. My stylist understood exactly what I wanted, salon felt so luxurious and welcoming..."
+              placeholder="e.g. The team was so welcoming, the result was exactly what I wanted, and the ambiance was incredible..."
               rows={4}
-              className="mt-5 w-full rounded-2xl border border-fuchsia-200 bg-fuchsia-50/30 px-4 py-3 text-sm outline-none focus:border-fuchsia-400 focus:ring-2 focus:ring-fuchsia-100"
+              className="w-full rounded-2xl border border-blush/20 bg-surface-2 px-4 py-3 text-sm text-foreground outline-none focus:border-blush focus:ring-2 focus:ring-blush/10 transition placeholder:text-muted/50 resize-none"
+              aria-label="What did you appreciate"
             />
-            <p className="mt-4 text-xs font-medium text-stone-500">What stood out? (optional tags)</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {LOVE_TAGS.map((tag) => (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => toggleTag(tag, "love")}
-                  className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
-                    selectedTags.includes(`love:${tag}`)
-                      ? "bg-fuchsia-600 text-white"
-                      : "bg-stone-100 text-stone-600 hover:bg-fuchsia-50"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
+            <div>
+              <p className="text-xs font-semibold text-muted mb-3 uppercase tracking-wider">What stood out? (optional)</p>
+              <div className="flex flex-wrap gap-2">
+                {LOVE_TAGS.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => toggleTag(tag, "love")}
+                    className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+                      selectedTags.includes(`love:${tag}`)
+                        ? "bg-gradient-to-r from-blush to-rose-gold text-white shadow-md"
+                        : "border border-border text-muted hover:border-blush/50 hover:text-blush bg-surface-2"
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
             </div>
-          </>
+          </div>
         )}
 
-        <button
-          type="button"
-          disabled={
-            submitting ||
-            (isLow && improveText.trim().length < 10) ||
-            (isHigh && appreciateText.trim().length < 10)
-          }
-          onClick={submitReview}
-          className="mt-6 w-full rounded-full bg-gradient-to-r from-rose-500 to-fuchsia-500 py-3.5 text-sm font-semibold text-white shadow-md disabled:opacity-50"
-        >
-          Submit feedback
-        </button>
-        <button
-          type="button"
-          onClick={() => setStep("rating")}
-          className="mt-3 w-full text-center text-xs text-stone-400 hover:text-rose-600"
-        >
-          Change rating
-        </button>
+        {error && (
+          <p className="mt-4 text-sm text-rose-400 bg-rose-400/10 border border-rose-400/20 rounded-xl px-4 py-3">
+            {error}
+          </p>
+        )}
+
+        <div className="mt-6 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setStep("rating")}
+            className="rounded-xl border border-border bg-surface-2 px-5 py-3 text-sm font-medium text-muted hover:border-blush hover:text-blush transition-colors"
+          >
+            ← Change rating
+          </button>
+          <button
+            type="button"
+            disabled={
+              submitting ||
+              (isLow && improveText.trim().length < 10) ||
+              (isHigh && appreciateText.trim().length < 10)
+            }
+            onClick={submitReview}
+            className="flex-1 rounded-2xl bg-gradient-to-r from-blush to-rose-gold py-3.5 text-sm font-semibold text-white shadow-lg transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-2"
+          >
+            {submitting ? (
+              <>
+                <span className="animate-spin text-base">⚙️</span>
+                Submitting...
+              </>
+            ) : (
+              <>
+                Submit review →
+              </>
+            )}
+          </button>
+        </div>
+
+        <p className="mt-4 text-center text-[11px] text-muted/60">
+          {isLow
+            ? `${10 - improveText.trim().length} more characters needed`
+            : `${10 - appreciateText.trim().length} more characters needed`}
+        </p>
       </div>
     );
   }
 
+  // Rating step
   return (
-    <div className="rounded-3xl border border-rose-100 bg-white/90 p-6 shadow-xl shadow-rose-100/50 backdrop-blur sm:p-8">
-      <p className="text-center text-sm text-rose-600 font-medium">How was your visit?</p>
-      <h1 className="font-display mt-2 text-center text-2xl font-semibold text-stone-900">
-        Rate your experience
-      </h1>
-      <p className="mt-2 text-center text-sm text-stone-600">
-        <strong>{booking.salonName}</strong> · {booking.serviceName}
-      </p>
-      <p className="text-center text-xs text-stone-400 mt-1">
-        {booking.date} at {booking.time}
-      </p>
-
-      <div className="mt-8">
-        <StarRating value={rating} onChange={setRating} />
+    <div className="glass-card rounded-3xl p-8 sm:p-10 anim-fade-up">
+      <div className="text-center mb-8">
+        <span className="text-sm font-medium text-blush">Share your experience</span>
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground mt-2">
+          How was your visit?
+        </h1>
+        <div className="mt-4 inline-flex items-center gap-2 rounded-xl bg-surface-2 border border-border px-4 py-2">
+          <span className="font-semibold text-foreground">{booking.salonName}</span>
+          <span className="text-muted">·</span>
+          <span className="text-sm text-muted">{booking.serviceName}</span>
+        </div>
+        <p className="text-xs text-muted/60 mt-2">
+          {booking.date} at {booking.time}
+        </p>
       </div>
 
+      {/* Star Rating */}
+      <div className="mb-6">
+        <StarRating value={rating} onChange={setRating} size="lg" />
+      </div>
+
+      {/* Rating feedback message */}
       {rating > 0 && (
-        <p className="mt-4 text-center text-sm text-stone-500">
-          {isLow
-            ? "We'll ask how we can improve — thank you for helping us grow."
-            : "We're so glad you enjoyed it! Tell us what you appreciated next."}
-        </p>
+        <div className="text-center mb-6 anim-fade-in">
+          <p className="text-sm text-muted">
+            {isLow
+              ? "We appreciate your honesty. Help us make it right."
+              : "So glad you enjoyed it! Tell us what you loved next."}
+          </p>
+          <div className="mt-3 flex justify-center gap-2">
+            {[1, 2, 3, 4, 5].map((s) => (
+              <span
+                key={s}
+                className={`text-lg ${s <= rating ? "text-gold" : "text-border/50"}`}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+        </div>
       )}
 
       <button
         type="button"
         disabled={rating < 1}
-        onClick={goToFeedback}
-        className="mt-8 w-full rounded-full bg-gradient-to-r from-rose-500 to-fuchsia-500 py-3.5 text-sm font-semibold text-white shadow-md disabled:opacity-50"
+        onClick={() => setStep("feedback")}
+        className="w-full rounded-2xl bg-gradient-to-r from-blush to-rose-gold py-4 text-sm font-semibold text-white shadow-lg transition-all hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:active:scale-100"
       >
-        Continue
+        Continue →
       </button>
     </div>
   );
