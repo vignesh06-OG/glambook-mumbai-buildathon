@@ -44,34 +44,34 @@ const TECH_STACK = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-blush-soft/20 bg-surface/50 backdrop-blur-sm">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+    <footer className="border-t border-blush-soft/30 bg-gradient-to-t from-surface/50 to-transparent">
+      <div className="mx-auto max-w-7xl px-5 py-20 sm:px-6">
         {/* Top section */}
-        <div className="grid gap-12 lg:grid-cols-2 mb-16">
+        <div className="grid gap-14 lg:grid-cols-2 mb-16">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blush to-rose-gold text-xl shadow-lg shadow-blush/20">
+            <div className="flex items-center gap-4 mb-5">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blush to-rose-gold text-2xl shadow-lg shadow-blush/25">
                 ✨
               </div>
               <div>
-                <p className="font-display text-lg font-semibold text-foreground">
+                <p className="font-display text-xl font-bold text-foreground">
                   {SITE_CONFIG.brand}
                 </p>
-                <p className="text-sm text-muted">{SITE_CONFIG.tagline}</p>
+                <p className="text-sm text-muted font-medium">{SITE_CONFIG.tagline}</p>
               </div>
             </div>
-            <p className="max-w-sm text-sm text-muted leading-relaxed mb-6">
+            <p className="max-w-md text-base text-muted leading-relaxed mb-8">
               {SITE_CONFIG.description}
             </p>
             {/* Tech stack */}
             <div className="mb-6">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted/60 mb-3">Built with</p>
-              <div className="flex flex-wrap gap-2">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted/60 mb-4">Built with</p>
+              <div className="flex flex-wrap gap-2.5">
                 {TECH_STACK.map((tech) => (
                   <span
                     key={tech.name}
-                    className="rounded-full border border-border bg-surface-2 px-3 py-1 text-xs text-muted"
+                    className="rounded-full border border-border/50 bg-surface-2 px-4 py-1.5 text-sm text-muted font-medium"
                     title={tech.category}
                   >
                     {tech.name}
@@ -80,32 +80,32 @@ export function Footer() {
               </div>
             </div>
             {/* Badges */}
-            <div className="flex flex-wrap gap-2">
-              <span className="rounded-full border border-blush-soft/50 bg-blush-soft/20 px-3 py-1 text-xs text-blush font-semibold">
+            <div className="flex flex-wrap gap-2.5">
+              <span className="rounded-full border border-blush-soft/50 bg-blush-soft/20 px-4 py-1.5 text-sm text-blush font-semibold">
                 🏆 {SITE_CONFIG.hackathon}
               </span>
-              <span className="rounded-full border border-gold-soft/50 bg-gold-soft/20 px-3 py-1 text-xs text-gold font-semibold">
+              <span className="rounded-full border border-gold-soft/50 bg-gold-soft/20 px-4 py-1.5 text-sm text-gold font-semibold">
                 🤖 AI-Powered
               </span>
-              <span className="rounded-full border border-emerald/20 bg-emerald/10 px-3 py-1 text-xs text-emerald font-semibold">
+              <span className="rounded-full border border-emerald/20 bg-emerald/10 px-4 py-1.5 text-sm text-emerald font-semibold">
                 ✅ Built with Next.js
               </span>
             </div>
           </div>
 
           {/* Links */}
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-3 gap-10">
             {FOOTER_LINKS.map((group) => (
               <div key={group.title}>
-                <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-blush">
+                <p className="mb-4 text-xs font-bold uppercase tracking-widest text-blush">
                   {group.title}
                 </p>
-                <ul className="space-y-2.5">
+                <ul className="space-y-3">
                   {group.links.map((link) => (
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="text-sm text-muted transition-colors hover:text-blush"
+                        className="text-base text-muted transition-colors duration-200 hover:text-foreground"
                       >
                         {link.label}
                       </Link>
@@ -118,15 +118,15 @@ export function Footer() {
         </div>
 
         {/* Team section */}
-        <div className="glass-light rounded-2xl p-6 mb-12 border border-blush/10">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <div className="flex -space-x-3">
+        <div className="glass-card rounded-2xl p-8 mb-12 border border-blush/15">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-8">
+            <div className="flex -space-x-4">
               {["A", "P", "S", "R"].map((initial, i) => (
                 <div
                   key={i}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-surface text-sm font-bold text-white shadow-md"
+                  className="flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-surface text-base font-bold text-white shadow-lg"
                   style={{
-                    background: ["#e879f9", "#ff6b4f", "#8b5cf6", "#10b981"][i],
+                    background: ["#f0abfc", "#ff7f5c", "#a78bfa", "#34d399"][i],
                     zIndex: 4 - i,
                   }}
                 >
@@ -135,29 +135,29 @@ export function Footer() {
               ))}
             </div>
             <div className="flex-1">
-              <p className="font-display text-sm font-semibold text-foreground mb-1">
+              <p className="font-display text-base font-bold text-foreground mb-2">
                 GlamBook AI Team
               </p>
-              <p className="text-xs text-muted leading-relaxed">
+              <p className="text-base text-muted leading-relaxed">
                 4-person indie team · Software engineer, product designer, AI researcher, and growth lead.
                 Passionate about making AI-powered beauty accessible to every woman in India.
               </p>
             </div>
             <div className="shrink-0 text-right">
-              <p className="text-[10px] text-muted/60 uppercase tracking-wider font-semibold">Founded</p>
-              <p className="text-sm font-semibold text-foreground">{SITE_CONFIG.launchYear}</p>
+              <p className="text-xs text-muted/60 uppercase tracking-wider font-bold">Founded</p>
+              <p className="text-base font-bold text-foreground">{SITE_CONFIG.launchYear}</p>
             </div>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="flex flex-col items-center gap-4 border-t border-border/50 pt-8 text-center sm:flex-row sm:justify-between">
-          <p className="text-xs text-muted">
+        <div className="flex flex-col items-center gap-5 border-t border-white/5 pt-10 text-center sm:flex-row sm:justify-between">
+          <p className="text-base text-muted">
             © {new Date().getFullYear()} {SITE_CONFIG.brand} · {SITE_CONFIG.city} · Built for{" "}
             {SITE_CONFIG.hackathon}
           </p>
-          <div className="flex items-center gap-2">
-            <span className="rounded-full bg-surface-2 px-2.5 py-0.5 text-[10px] text-muted/60 border border-border">
+          <div className="flex items-center gap-3">
+            <span className="rounded-full bg-surface-2 px-3.5 py-1.5 text-xs text-muted/70 border border-border/50 font-medium">
               Demo · Mock AI · Not a funded product
             </span>
           </div>

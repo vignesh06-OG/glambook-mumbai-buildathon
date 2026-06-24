@@ -214,22 +214,22 @@ export default function BeautyAnalysisPage() {
   };
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6">
+    <div className="min-h-screen py-14 px-4 sm:px-6">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
-        <div className="text-center mb-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-blush-soft border border-blush-soft px-4 py-1.5 text-xs font-semibold text-blush mb-4">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blush opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-blush" />
+        <div className="text-center mb-14">
+          <span className="inline-flex items-center gap-2 rounded-full bg-blush-soft border border-blush/20 px-5 py-2 text-sm font-semibold text-blush mb-6">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blush opacity-60" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-blush" />
             </span>
             AI-Powered · Free · 30 Seconds
           </span>
-          <h1 className="font-display text-3xl font-bold text-foreground sm:text-4xl lg:text-5xl">
+          <h1 className="font-display text-4xl font-bold text-foreground sm:text-5xl lg:text-6xl tracking-tight">
             AI Beauty{" "}
-            <span className="gradient-text">Analysis</span>
+            <span className="gradient-text-bright">Analysis</span>
           </h1>
-          <p className="mt-4 max-w-lg mx-auto text-muted">
+          <p className="mt-6 max-w-2xl mx-auto text-lg text-muted leading-relaxed">
             Upload a selfie and get personalized face shape, skin tone, hair type insights — plus
             look and salon recommendations tailored to you.
           </p>

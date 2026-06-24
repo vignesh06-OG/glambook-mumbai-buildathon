@@ -7,6 +7,7 @@ export default {
       colors: {
         blush: {
           DEFAULT: "var(--color-blush)",
+          bright: "var(--color-blush-bright)",
           soft: "var(--color-blush-soft)",
         },
         "rose-gold": {
@@ -26,22 +27,36 @@ export default {
         surface: "var(--color-surface)",
         "surface-2": "var(--color-surface-2)",
         "surface-3": "var(--color-surface-3)",
+        "surface-4": "var(--color-surface-4)",
         foreground: "var(--color-foreground)",
         muted: "var(--color-muted)",
+        "muted-soft": "var(--color-muted-soft)",
         border: "var(--color-border)",
+        "border-soft": "var(--color-border-soft)",
       },
       boxShadow: {
-        soft: "0 12px 30px rgba(251, 113, 133, 0.14)",
-        card: "0 10px 24px rgba(15, 23, 42, 0.06)",
-        glow: "0 18px 55px rgba(232, 121, 249, 0.18)",
-        "2xl": "0 24px 64px rgba(0, 0, 0, 0.5)",
-        "3xl": "0 32px 80px rgba(0, 0, 0, 0.6)",
+        soft: "0 16px 40px rgba(251, 113, 133, 0.18)",
+        card: "0 20px 60px rgba(0, 0, 0, 0.5)",
+        glow: "0 24px 80px rgba(240, 171, 252, 0.25)",
+        "glow-sm": "0 12px 40px rgba(240, 171, 252, 0.15)",
+        "2xl": "0 32px 80px rgba(0, 0, 0, 0.6)",
+        "3xl": "0 48px 100px rgba(0, 0, 0, 0.7)",
+        "inner-glow": "inset 0 0 30px rgba(240, 171, 252, 0.08)",
       },
       borderRadius: {
         "4xl": "2rem",
+        "5xl": "2.5rem",
       },
       animation: {
-        "ping-slow": "ping 2s cubic-bezier(0, 0, 0.2, 1) infinite",
+        "ping-slow": "ping 2.5s cubic-bezier(0, 0, 0.2, 1) infinite",
+        "float-slow": "float 6s ease-in-out infinite",
+        "pulse-glow": "pulse-glow 3s ease-in-out infinite",
+      },
+      fontSize: {
+        "2xs": ["0.625rem", { lineHeight: "0.875rem" }],
+      },
+      backdropBlur: {
+        "xs": "2px",
       },
     },
   },

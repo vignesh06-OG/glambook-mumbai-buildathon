@@ -45,10 +45,10 @@ export default function ProfilePage() {
   }, []);
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6">
+    <div className="min-h-screen py-14 px-4 sm:px-6">
       <div className="mx-auto max-w-4xl">
         {/* Profile header */}
-        <div className="glass-card rounded-3xl p-8 mb-8">
+        <div className="glass-card rounded-3xl p-10 mb-10">
           <div className="flex items-center gap-6">
             {/* Avatar */}
             <div className="h-20 w-20 rounded-full bg-gradient-to-br from-blush to-rose-gold flex items-center justify-center text-3xl font-bold text-white shadow-lg shrink-0">

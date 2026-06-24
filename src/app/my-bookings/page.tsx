@@ -3,20 +3,20 @@ import { MyBookingsList } from "@/components/MyBookingsList";
 
 export default function MyBookingsPage() {
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6">
+    <div className="min-h-screen py-14 px-4 sm:px-6">
       <div className="mx-auto max-w-3xl">
         <Link href="/" className="text-sm text-blush hover:underline mb-8 inline-block">
           ← Back to Home
         </Link>
 
-        <div className="mb-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-blush-soft border border-blush-soft px-4 py-1.5 text-xs font-semibold text-blush mb-3">
+        <div className="mb-12">
+          <span className="inline-flex items-center gap-2 rounded-full bg-blush-soft border border-blush/20 px-5 py-2 text-sm font-semibold text-blush mb-5">
             📅 Your Booking History
           </span>
-          <h1 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
+          <h1 className="font-display text-4xl font-bold text-foreground sm:text-5xl tracking-tight">
             My Bookings
           </h1>
-          <p className="mt-3 text-muted max-w-lg">
+          <p className="mt-4 text-lg text-muted max-w-lg leading-relaxed">
             Rate your visits and help salons — and other women — choose with confidence.
           </p>
         </div>

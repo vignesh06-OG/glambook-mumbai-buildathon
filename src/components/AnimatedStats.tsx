@@ -72,18 +72,18 @@ function StatItem({
   delay: number;
   active: boolean;
 }) {
-  const counted = useCountUp(value, 1400, active);
+  const counted = useCountUp(value, 1600, active);
 
   return (
     <div
-      className="glass-light rounded-2xl border border-border/50 px-5 py-4 text-center anim-fade-up"
+      className="glass-card rounded-2xl border border-blush-soft/30 px-6 py-5 text-center anim-fade-up"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <p className="font-display text-2xl font-bold gradient-text">
+      <p className="font-display text-3xl sm:text-4xl font-bold gradient-text-bright">
         {counted}
-        {suffix && <span className="text-blush">{suffix}</span>}
+        {suffix && <span className="text-blush-bright">{suffix}</span>}
       </p>
-      <p className="mt-1 text-xs text-muted">{label}</p>
+      <p className="mt-2 text-sm text-muted font-medium">{label}</p>
     </div>
   );
 }
@@ -92,7 +92,7 @@ export function AnimatedStats() {
   const { ref, inView } = useInView(0.2);
 
   return (
-    <div ref={ref} className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div ref={ref} className="grid grid-cols-2 gap-5 sm:grid-cols-4">
       <StatItem value={SALONS.length} suffix="+" label="Curated Salons" delay={0} active={inView} />
       <StatItem value={4} suffix=" AI" label="AI Features" delay={100} active={inView} />
       <StatItem value={4} suffix=".6★" label="Avg Rating" delay={200} active={inView} />

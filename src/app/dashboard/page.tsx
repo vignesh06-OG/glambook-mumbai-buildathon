@@ -119,19 +119,19 @@ export default function DashboardPage() {
   const maxBookings = Math.max(...dashboard.popularServices.map((s) => s.bookings));
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6">
+    <div className="min-h-screen py-14 px-4 sm:px-6">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-10">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between mb-12">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-blush-soft border border-blush-soft px-4 py-1.5 text-xs font-semibold text-blush mb-3">
+            <span className="inline-flex items-center gap-2 rounded-full bg-blush-soft border border-blush/20 px-5 py-2 text-sm font-semibold text-blush mb-5">
               📊 Salon Owner Dashboard · AI-Powered Analytics
             </span>
-            <h1 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
+            <h1 className="font-display text-4xl font-bold text-foreground sm:text-5xl tracking-tight">
               Salon{" "}
-              <span className="gradient-text">Dashboard</span>
+              <span className="gradient-text-bright">Dashboard</span>
             </h1>
-            <p className="mt-2 text-muted">
+            <p className="mt-4 text-lg text-muted">
               Real-time insights, revenue analytics, and AI-powered recommendations
             </p>
           </div>

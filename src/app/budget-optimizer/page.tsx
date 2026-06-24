@@ -31,18 +31,18 @@ export default function BudgetOptimizerPage() {
   }, [budget, occasion, location]);
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6">
+    <div className="min-h-screen py-14 px-4 sm:px-6">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
-        <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gold-soft border border-gold/20 px-4 py-1.5 text-xs font-semibold text-gold mb-4">
+        <div className="text-center mb-14">
+          <span className="inline-flex items-center gap-2 rounded-full bg-gold-soft border border-gold/20 px-5 py-2 text-sm font-semibold text-gold mb-6">
             💰 AI-Powered · Smart Savings
           </span>
-          <h1 className="font-display text-3xl font-bold text-foreground sm:text-4xl lg:text-5xl">
+          <h1 className="font-display text-4xl font-bold text-foreground sm:text-5xl lg:text-6xl tracking-tight">
             AI Budget{" "}
-            <span className="gradient-text">Optimizer</span>
+            <span className="gradient-text-bright">Optimizer</span>
           </h1>
-          <p className="mt-4 max-w-lg mx-auto text-muted">
+          <p className="mt-6 max-w-2xl mx-auto text-lg text-muted leading-relaxed">
             Tell us your budget and occasion — our AI finds the best beauty packages and salon
             combinations optimized for maximum value.
           </p>

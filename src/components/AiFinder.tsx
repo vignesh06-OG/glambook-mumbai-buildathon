@@ -35,20 +35,20 @@ export function AiFinder({ salons }: Props) {
   }
 
   return (
-    <section id="ai" className="scroll-mt-20 py-20 px-4 sm:px-6">
+    <section id="ai" className="scroll-mt-20 py-28 px-4 sm:px-6">
       <div className="mx-auto max-w-7xl">
-        <div className="text-center mb-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-soft border border-violet/20 px-4 py-1.5 text-xs font-semibold text-violet mb-4">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-violet" />
+        <div className="text-center mb-12">
+          <span className="inline-flex items-center gap-2 rounded-full bg-violet-soft border border-violet/20 px-4 py-2 text-sm font-semibold text-violet mb-5">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet opacity-60" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-violet" />
             </span>
             AI-Powered · Smart Matching
           </span>
-          <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl lg:text-5xl">
-            Your AI Beauty <span className="gradient-text">Concierge</span>
+          <h2 className="font-display text-4xl font-bold text-foreground sm:text-5xl lg:text-6xl tracking-tight">
+            Your AI Beauty <span className="gradient-text-bright">Concierge</span>
           </h2>
-          <p className="mt-4 max-w-xl mx-auto text-muted leading-relaxed">
+          <p className="mt-5 max-w-2xl mx-auto text-lg text-muted leading-relaxed">
             Describe your dream look — bridal, spa, nails, or budget-friendly — and our AI finds
             the perfect Mumbai salon for you, matched by service, area, and rating.
           </p>

@@ -19,14 +19,14 @@ type Props = {
 
 export function QuickFilters({ active, onChange, locationEnabled }: Props) {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+    <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-hide">
       <button
         type="button"
         onClick={() => onChange("default")}
-        className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition ${
+        className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-semibold transition duration-200 ${
           active === "default"
-            ? "bg-gradient-to-r from-blush to-rose-gold text-white shadow-lg"
-            : "glass-light border border-border text-muted hover:border-blush/40 hover:text-foreground"
+            ? "bg-gradient-to-r from-blush via-blush-bright to-rose-gold text-white shadow-lg shadow-blush/20"
+            : "glass-light border border-border/50 text-muted hover:border-blush/50 hover:text-foreground"
         }`}
       >
         All salons
@@ -38,10 +38,10 @@ export function QuickFilters({ active, onChange, locationEnabled }: Props) {
           onClick={() => onChange(f.id)}
           disabled={f.id === "nearby" && !locationEnabled}
           title={f.id === "nearby" && !locationEnabled ? "Enable location to sort by distance" : undefined}
-          className={`shrink-0 flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition ${
+          className={`shrink-0 flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition duration-200 ${
             active === f.id
-              ? "bg-gradient-to-r from-blush to-rose-gold text-white shadow-lg"
-              : "glass-light border border-border text-muted hover:border-blush/40 hover:text-foreground"
+              ? "bg-gradient-to-r from-blush via-blush-bright to-rose-gold text-white shadow-lg shadow-blush/20"
+              : "glass-light border border-border/50 text-muted hover:border-blush/50 hover:text-foreground"
           } ${f.id === "nearby" && !locationEnabled ? "opacity-40 cursor-not-allowed" : ""}`}
         >
           <span>{f.icon}</span>

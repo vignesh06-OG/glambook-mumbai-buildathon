@@ -82,23 +82,23 @@ export function GlamBookAIStylist() {
   return (
     <section
       id="ai-stylist"
-      className="scroll-mt-20 py-20 px-4 sm:px-6"
+      className="scroll-mt-20 py-28 px-4 sm:px-6"
       style={{ contentVisibility: "auto", containIntrinsicSize: "900px" }}
     >
       <div className="mx-auto max-w-3xl">
         {/* Section header */}
-        <div className="text-center mb-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-soft border border-violet/20 px-4 py-1.5 text-xs font-semibold text-violet mb-4">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-violet" />
+        <div className="text-center mb-12">
+          <span className="inline-flex items-center gap-2 rounded-full bg-violet-soft border border-violet/20 px-4 py-2 text-sm font-semibold text-violet mb-5">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet opacity-60" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-violet" />
             </span>
             Generative AI · Live
           </span>
-          <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
-            GlamBook AI <span className="gradient-text">Stylist</span>
+          <h2 className="font-display text-4xl font-bold text-foreground sm:text-5xl tracking-tight">
+            GlamBook AI <span className="gradient-text-bright">Stylist</span>
           </h2>
-          <p className="mt-2 text-muted max-w-md mx-auto">
+          <p className="mt-4 text-lg text-muted max-w-md mx-auto leading-relaxed">
             Real AI beauty consultant — powered by LLM, trained on our Mumbai salon catalog.
           </p>
         </div>
